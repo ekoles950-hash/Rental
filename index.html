@@ -51,11 +51,12 @@
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4 relative">
 
-    <!-- Tombol Admin -->
+    <!-- Tombol Admin (Gear Icon) -->
     <button onclick="openAdminLogin()" class="absolute top-4 right-4 text-slate-500 hover:text-white transition z-10">
         <i class="fa-solid fa-gear text-2xl"></i>
     </button>
@@ -166,24 +167,18 @@
                 </div>
             </div>
 
-            <!-- Tampilan QR Code (Wajib ada file QRIS.jpg di folder yang sama) -->
+            <!-- Tampilan QR Code -->
             <div id="qrisDisplay" class="hidden fade-in mt-2 bg-white rounded-xl p-4 text-center">
                 <p class="text-black font-bold text-xs mb-2">Scan QRIS untuk Bayar</p>
-                <div class="relative min-h-[150px] flex items-center justify-center">
-                    <!-- Gunakan file QRIS.jpg -->
-                    <img src="QRIS.jpg" 
-                         onerror="this.style.display='none'; document.getElementById('qrisError').classList.remove('hidden');"
-                         alt="QRIS Code" 
-                         class="mx-auto w-full max-w-[200px] h-auto object-contain border border-black rounded-lg">
-                    
-                    <!-- Pesan Error jika gambar tidak ada -->
-                    <div id="qrisError" class="hidden text-red-600 text-[10px] font-bold p-2 bg-red-100 rounded border border-red-400">
-                        <i class="fa-solid fa-triangle-exclamation text-xl mb-1"></i><br>
-                        Gambar tidak ditemukan!<br>
-                        Simpan gambar QRIS anda dengan nama<br>
-                        <span class="bg-yellow-200 px-1 rounded text-black">QRIS.jpg</span><br>
-                        di dalam folder yang sama dengan file ini.
-                    </div>
+                <img src="QRIS.jpg" 
+                     onerror="this.style.display='none'; document.getElementById('qrisError').classList.remove('hidden');"
+                     alt="QRIS Code" 
+                     class="mx-auto w-full max-w-[200px] h-auto object-contain border border-black rounded-lg">
+                
+                <div id="qrisError" class="hidden text-red-600 text-[10px] font-bold p-2 bg-red-100 rounded border border-red-400">
+                    <i class="fa-solid fa-triangle-exclamation text-xl mb-1"></i><br>
+                    Gambar tidak ditemukan!<br>
+                    Simpan gambar QRIS anda dengan nama <b>QRIS.jpg</b> di folder yang sama.
                 </div>
                 <p class="text-[10px] text-gray-500 mt-2">Tunjukan bukti bayar ke admin</p>
             </div>
@@ -209,7 +204,7 @@
         </div>
 
         <div class="bg-black/80 p-3 text-center text-[10px] text-slate-600 border-t border-slate-800">
-            PlayStation Automation System v13.0
+            PlayStation Automation System v15.0
         </div>
     </div>
 
@@ -225,11 +220,11 @@
         </div>
     </div>
 
-    <!-- MODAL LOGIN ADMIN -->
+    <!-- MODAL LOGIN ADMIN (UPDATED) -->
     <div id="adminLoginModal" class="fixed inset-0 bg-black/95 backdrop-blur-md hidden flex items-center justify-center z-50 p-6">
         <div class="bg-slate-900 rounded-2xl p-6 max-w-xs w-full border border-slate-700">
             <h3 class="text-white font-bold mb-4 text-center">Login Admin</h3>
-            <input type="password" id="adminPassword" placeholder="Password (Default: 3)" class="w-full bg-black border border-slate-600 rounded p-2 text-white mb-4">
+            <input type="password" id="adminPassword" placeholder="Masukkan Password Admin" class="w-full bg-black border border-slate-600 rounded p-2 text-white mb-4">
             <div class="flex gap-2">
                 <button onclick="document.getElementById('adminLoginModal').classList.add('hidden')" class="w-1/2 bg-slate-700 text-white p-2 rounded">Batal</button>
                 <button onclick="checkAdminPassword()" class="w-1/2 bg-blue-600 text-white p-2 rounded">Masuk</button>
@@ -237,7 +232,7 @@
         </div>
     </div>
 
-    <!-- -->
+    <!-- MODAL PENGATURAN ADMIN -->
     <div id="adminSettingsModal" class="fixed inset-0 bg-black/95 backdrop-blur-md hidden flex items-center justify-center z-50 p-6">
         <div class="bg-slate-900 rounded-2xl p-6 max-w-sm w-full border border-slate-700">
             <h3 class="text-white font-bold mb-4 text-center border-b border-slate-700 pb-2"><i class="fa-solid fa-gear"></i> Pengaturan Voucher</h3>
@@ -267,7 +262,7 @@
     <script>
         // --- CONFIG ---
         const DEFAULT_CONFIG = {
-            voucherCode: "kopi123"
+            voucherCode: "BERKAH",
             voucherPrice: 17000,
             hourlyPrice: 5000
         };
@@ -289,14 +284,19 @@
             document.getElementById('adminLoginModal').classList.remove('hidden');
             document.getElementById('adminPassword').value = '';
         }
+        
+        // --- PASSWORD CHECK UPDATED ---
         function checkAdminPassword() {
-            if (document.getElementById('adminPassword').value === 'admin123') {
+            const inputPass = document.getElementById('adminPassword').value;
+            // Password baru: RENTALPS123
+            if (inputPass === 'RENTALPS123') { 
                 document.getElementById('adminLoginModal').classList.add('hidden');
                 openSettings();
             } else {
                 alert('Password Salah!');
             }
         }
+        
         function openSettings() {
             document.getElementById('adminSettingsModal').classList.remove('hidden');
             document.getElementById('settingCode').value = config.voucherCode;
