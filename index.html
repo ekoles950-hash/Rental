@@ -3,162 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ramadhan Mubarak - PS Rental</title>
+    <title>Basecamp Coffee - Ramadhan</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@400;700&family=Amiri:wght@700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #1a0b2e; /* Dark Purple Base */
-            /* Background Malam Berbintang */
+            background-color: #111827;
+            /* Background Pattern Halus */
             background-image: 
-                radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 3px),
-                radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 2px),
-                radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 3px),
-                linear-gradient(to bottom, #0f0518 0%, #2e1065 100%);
-            background-size: 550px 550px, 350px 350px, 250px 250px, 100% 100%;
-            background-position: 0 0, 40px 60px, 130px 270px, 0 0;
-            color: #fef3c7; /* Gold Light Text */
+                radial-gradient(at 0% 0%, rgba(22, 101, 52, 0.4) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(180, 83, 9, 0.2) 0px, transparent 50%);
             display: flex;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
             margin: 0;
             padding: 10px;
-            overflow-x: hidden;
         }
 
         .font-arab { font-family: 'Amiri', serif; }
-        .font-kufi { font-family: 'Reem Kufi', sans-serif; }
 
-        /* Card Utama - Glassmorphism Ungu Mewah */
-        .ramadhan-card {
+        /* Animasi Teks Berkedip */
+        @keyframes neon-blink {
+            0%, 100% { 
+                opacity: 1; 
+                text-shadow: 0 0 5px #fbbf24, 0 0 10px #d97706; 
+                transform: scale(1); 
+            }
+            50% { 
+                opacity: 0.7; 
+                text-shadow: none; 
+                transform: scale(0.98); 
+            }
+        }
+
+        .blinking-text {
+            animation: neon-blink 2s infinite ease-in-out;
+        }
+
+        /* CARD UTAMA */
+        .app-card {
             width: 100%;
             max-width: 380px;
-            background: rgba(30, 15, 60, 0.85);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(251, 191, 36, 0.4); /* Gold Border */
-            border-radius: 25px;
-            box-shadow: 0 0 60px rgba(251, 191, 36, 0.15);
-            position: relative;
+            background-color: #1f2937;
+            border: 1px solid #166534;
+            border-radius: 24px;
+            box-shadow: 0 0 50px rgba(22, 163, 74, 0.15);
             overflow: hidden;
+            position: relative;
             display: flex;
             flex-direction: column;
             max-height: 95vh;
         }
 
-        /* Animasi Lentera Gantung */
-        .lantern {
-            position: absolute;
-            top: -10px;
-            width: 30px;
-            height: 50px;
-            background: linear-gradient(to bottom, #d97706, #fbbf24);
-            border-radius: 5px;
-            z-index: 20;
-            box-shadow: 0 10px 30px rgba(251, 191, 36, 0.6);
-            transform-origin: top center;
-            animation: swing 3s infinite ease-in-out alternate;
-        }
-        .lantern::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 10px;
-            width: 10px;
-            height: 10px;
-            background: #fbbf24;
-            border-radius: 50%;
-            box-shadow: 0 0 15px #fbbf24;
-        }
-        @keyframes swing { from { transform: rotate(-5deg); } to { transform: rotate(5deg); } }
-
-        /* Teks Arab Berkedip */
-        @keyframes neon-blink {
-            0%, 100% { opacity: 1; text-shadow: 0 0 10px #fbbf24, 0 0 20px #d97706; transform: scale(1); }
-            50% { opacity: 0.6; text-shadow: none; transform: scale(0.98); }
-        }
-        .blinking-arab { animation: neon-blink 2s infinite ease-in-out; }
-
-        /* Header Style */
-        .header-bg {
-            background: linear-gradient(180deg, rgba(88, 28, 135, 0.9) 0%, rgba(30, 15, 60, 0) 100%);
-            padding: 20px;
-            padding-top: 30px;
-            border-bottom: 1px solid rgba(251, 191, 36, 0.2);
+        /* HEADER CUSTOM BASECAMP */
+        .header-section {
+            background: linear-gradient(160deg, #022c22 0%, #064e3b 100%);
             position: relative;
+            /* Padding diperkecil lagi */
+            padding: 15px 20px 20px 20px; 
             text-align: center;
+            border-bottom: 2px solid #ca8a04;
+            overflow: hidden;
         }
 
-        /* Scroll Area */
+        /* Ornamen Latar Header */
+        .header-ornament {
+            position: absolute;
+            top: -20px; left: -20px;
+            width: 100px; height: 100px;
+            background: radial-gradient(circle, rgba(251,191,36,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        /* KONTEN */
         .content-area {
-            padding: 20px;
+            padding: 15px 20px;
+            padding-bottom: 30px;
             overflow-y: auto;
             flex: 1;
         }
-        .content-area::-webkit-scrollbar { width: 4px; }
-        .content-area::-webkit-scrollbar-thumb { background: #d97706; border-radius: 4px; }
+        .content-area::-webkit-scrollbar { width: 0; }
 
-        /* Tombol Emas Premium */
-        .btn-gold {
-            background: linear-gradient(to right, #b45309, #d97706, #fbbf24);
-            color: #2e1065;
-            border: 1px solid #fcd34d;
-            box-shadow: 0 4px 20px rgba(245, 158, 11, 0.4);
+        /* Input */
+        .input-dark {
+            background-color: #111827;
+            border: 1px solid #374151;
+            color: white;
             transition: all 0.3s;
         }
-        .btn-gold:active { transform: scale(0.97); }
+        .input-dark:focus {
+            border-color: #22c55e;
+            box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
+            outline: none;
+        }
 
-        /* Tombol Jam */
+        /* Tombol */
+        .btn-green-glow {
+            background: linear-gradient(to right, #16a34a, #15803d);
+            border: 1px solid #22c55e;
+            box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+            transition: transform 0.2s;
+        }
+        .btn-green-glow:active { transform: scale(0.98); }
+
+        /* Grid Jam */
         .hour-btn {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(16, 185, 129, 0.3); /* Emerald border */
+            background: #374151;
+            border: 1px solid #4b5563;
             color: #d1d5db;
-            transition: all 0.2s;
         }
         .hour-btn.active {
-            background: #059669; /* Emerald Green */
-            color: white;
+            background: #22c55e;
+            color: black;
             font-weight: bold;
-            border-color: #34d399;
-            box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
-            transform: scale(1.05);
+            border-color: #86efac;
+            box-shadow: 0 0 10px #22c55e;
         }
-
-        /* Input Fields */
-        .input-ramadhan {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid #7c3aed;
-            color: #fcd34d;
-            transition: 0.3s;
-        }
-        .input-ramadhan:focus {
-            border-color: #fbbf24;
-            outline: none;
-            box-shadow: 0 0 10px rgba(251, 191, 36, 0.3);
-        }
-        ::placeholder { color: #a78bfa; font-size: 11px; }
 
         /* Radio Box */
         .radio-box {
-            background: rgba(0,0,0,0.3);
-            border: 1px solid #5b21b6;
-            transition: 0.2s;
+            background: #111827;
+            border: 1px solid #374151;
+            transition: all 0.2s;
         }
         .radio-box.checked {
-            background: rgba(217, 119, 6, 0.15);
-            border-color: #fbbf24;
+            background: rgba(34, 197, 94, 0.1);
+            border-color: #22c55e;
         }
-        .radio-box.checked i { color: #fbbf24; }
-        .radio-box.checked div { color: #fcd34d; }
 
-        .fade-in { animation: fadeIn 0.5s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        
         .loader {
-            border: 3px solid rgba(255,255,255,0.1);
-            border-top: 3px solid #fbbf24;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top: 3px solid #fff;
             border-radius: 50%;
             width: 20px; height: 20px;
             animation: spin 1s linear infinite;
@@ -169,27 +150,33 @@
 <body>
 
     <!-- Tombol Admin -->
-    <button onclick="openAdminLogin()" class="fixed top-4 right-4 z-50 text-amber-500/50 hover:text-amber-300 transition bg-black/30 p-2 rounded-full backdrop-blur-sm">
+    <button onclick="openAdminLogin()" class="fixed top-4 right-4 z-50 text-gray-500 hover:text-green-400 transition bg-black/30 p-2 rounded-full backdrop-blur-sm border border-gray-700">
         <i class="fa-solid fa-gear text-lg"></i>
     </button>
 
-    <div class="ramadhan-card">
+    <div class="app-card">
         
-        <!-- Hiasan Lentera -->
-        <div class="lantern" style="left: 30px; height: 60px; animation-duration: 2.5s;"></div>
-        <div class="lantern" style="right: 30px; height: 45px; animation-duration: 3.2s;"></div>
-
-        <!-- Header Arab -->
-        <div class="header-bg">
-            <div class="mb-1 text-amber-300 opacity-80"><i class="fa-solid fa-moon text-3xl"></i></div>
+        <!-- HEADER GRAFIS SUPER KECIL -->
+        <div class="header-section">
+            <div class="header-ornament"></div>
             
-            <h1 class="text-5xl text-yellow-400 font-arab font-bold mb-1 blinking-arab drop-shadow-lg leading-tight">
+            <!-- Ikon Bulan Bintang -->
+            <div class="mb-1 text-yellow-400 opacity-90 animate-pulse">
+                <i class="fa-solid fa-moon text-lg"></i>
+            </div>
+
+            <!-- Teks Arab Berkedip (Diperkecil ke text-2xl) -->
+            <h1 class="text-2xl text-yellow-400 font-arab font-bold mb-1 -mt-1 blinking-text leading-none relative z-10">
                 رمضان مبارك
             </h1>
-            
-            <div class="inline-block px-3 py-1 border border-emerald-500/30 rounded-full bg-emerald-900/30 backdrop-blur-sm mt-1">
-                <p class="text-[10px] text-emerald-300 font-bold tracking-[0.2em] uppercase font-kufi">
-                    PlayStation Rental
+
+            <!-- Teks Basecamp (Diperkecil ke text-[10px] & text-[6px]) -->
+            <div class="relative z-10 bg-black/20 backdrop-blur-sm border border-white/10 rounded-lg p-1.5 mx-10">
+                <h2 class="text-[10px] font-bold text-green-300 font-sans tracking-wide uppercase drop-shadow-md mb-0.5">
+                    Basecamp Coffee
+                </h2>
+                <p class="text-[6px] text-gray-300 font-light italic leading-tight">
+                    Mengucapkan Selamat Menunaikan<br>Ibadah Puasa 1447 H
                 </p>
             </div>
         </div>
@@ -198,144 +185,140 @@
             
             <!-- Nama -->
             <div>
-                <label class="text-[10px] text-emerald-300 font-bold ml-1 uppercase">Nama Antum</label>
+                <label class="text-[10px] text-green-400 font-bold ml-1 uppercase">Nama Pelanggan</label>
                 <div class="relative mt-1">
-                    <span class="absolute left-3 top-2.5 text-amber-500"><i class="fa-solid fa-user"></i></span>
-                    <input type="text" id="renterName" class="w-full input-ramadhan rounded-xl py-2.5 pl-9 pr-4 text-sm font-medium" placeholder="Masukkan nama...">
+                    <span class="absolute left-3 top-2.5 text-green-600"><i class="fa-solid fa-user"></i></span>
+                    <input type="text" id="renterName" class="w-full input-dark rounded-xl py-2.5 pl-9 pr-4 text-sm" placeholder="Masukkan nama...">
                 </div>
             </div>
 
             <!-- Durasi -->
             <div>
-                <label class="text-[10px] text-emerald-300 font-bold ml-1 uppercase">Pilih Durasi (Jam)</label>
+                <label class="text-[10px] text-green-400 font-bold ml-1 uppercase">Pilih Durasi (Jam)</label>
                 <div class="grid grid-cols-6 gap-2 mt-1" id="hourGrid">
                     <!-- JS Generated -->
                 </div>
             </div>
 
-            <!-- PANEL VOUCHER (Muncul di 3 Jam) -->
-            <div id="promoSection" class="hidden fade-in bg-purple-900/40 p-3 rounded-xl border border-amber-500/30 border-dashed relative">
-                <div class="absolute -top-3 -right-3 text-amber-500/20 text-4xl"><i class="fa-solid fa-star"></i></div>
-                <div>
-                    <label class="text-[10px] text-amber-300 font-bold mb-1 block uppercase"><i class="fa-solid fa-ticket mr-1"></i> Kode Berkah</label>
-                    <input type="text" id="voucherCode" placeholder="Masukkan Kode" oninput="updateSummary()" 
-                        class="w-full bg-black/40 border border-amber-500/30 rounded-lg py-2 text-center text-sm font-bold text-amber-300 uppercase tracking-widest focus:outline-none focus:border-amber-500 placeholder-purple-400/50">
-                    <p id="voucherMessage" class="text-center text-[9px] mt-2 h-3 font-bold"></p>
-                </div>
+            <!-- PANEL VOUCHER (Hanya Kode) -->
+            <div id="promoSection" class="hidden fade-in bg-green-900/20 p-3 rounded-xl border border-green-600/30 border-dashed">
+                <label class="text-[10px] text-green-400 font-bold ml-1 uppercase mb-1 block"><i class="fa-solid fa-ticket mr-1"></i> Kode Voucher</label>
+                <input type="text" id="voucherCode" placeholder="Masukkan Kode Promo" oninput="updateSummary()" 
+                    class="w-full bg-black/40 border border-green-600/30 rounded-lg py-2 text-center text-sm font-bold text-yellow-400 uppercase tracking-widest focus:outline-none focus:border-green-500 placeholder-gray-600">
+                <p id="voucherMessage" class="text-center text-[9px] mt-1 h-3 font-bold"></p>
             </div>
 
             <!-- Metode Pembayaran -->
             <div>
-                <label class="text-[10px] text-emerald-300 font-bold ml-1 uppercase">Infaq / Pembayaran</label>
+                <label class="text-[10px] text-green-400 font-bold ml-1 uppercase">Metode Pembayaran</label>
                 <div class="grid grid-cols-3 gap-2 mt-1">
                     <!-- Kotak -->
                     <label class="cursor-pointer relative group">
                         <input type="radio" name="paymentMethod" value="Kotak (Atas TV)" class="peer sr-only" onchange="toggleQRIS()">
-                        <div class="radio-box p-2 rounded-xl text-center h-full flex flex-col justify-center items-center hover:bg-purple-900/50">
-                            <i class="fa-solid fa-box-open text-purple-300 text-lg mb-1 transition"></i>
-                            <div class="text-[8px] text-gray-400 font-bold uppercase leading-tight mt-1 transition">Kotak<br>(Atas TV)</div>
+                        <div class="radio-box p-2 rounded-xl text-center h-full flex flex-col justify-center items-center">
+                            <i class="fa-solid fa-box-open text-yellow-500 text-lg mb-1"></i>
+                            <div class="text-[8px] text-gray-300 font-bold uppercase leading-tight mt-1">Kotak<br>(Atas TV)</div>
                         </div>
                     </label>
                     <!-- Kasir -->
                     <label class="cursor-pointer relative group">
                         <input type="radio" name="paymentMethod" value="Kasir" class="peer sr-only" onchange="toggleQRIS()">
-                        <div class="radio-box p-2 rounded-xl text-center h-full flex flex-col justify-center items-center hover:bg-purple-900/50">
-                            <i class="fa-solid fa-cash-register text-purple-300 text-lg mb-1 transition"></i>
-                            <div class="text-[8px] text-gray-400 font-bold uppercase leading-tight mt-1 transition">Bayar<br>di Kasir</div>
+                        <div class="radio-box p-2 rounded-xl text-center h-full flex flex-col justify-center items-center">
+                            <i class="fa-solid fa-cash-register text-blue-400 text-lg mb-1"></i>
+                            <div class="text-[8px] text-gray-300 font-bold uppercase leading-tight mt-1">Bayar<br>di Kasir</div>
                         </div>
                     </label>
                     <!-- QRIS -->
                     <label class="cursor-pointer relative group">
                         <input type="radio" name="paymentMethod" value="QRIS" class="peer sr-only" onchange="toggleQRIS()">
-                        <div class="radio-box p-2 rounded-xl text-center h-full flex flex-col justify-center items-center hover:bg-purple-900/50">
-                            <i class="fa-solid fa-qrcode text-purple-300 text-lg mb-1 transition"></i>
-                            <div class="text-[8px] text-gray-400 font-bold uppercase leading-tight mt-1 transition">Scan<br>QRIS</div>
+                        <div class="radio-box p-2 rounded-xl text-center h-full flex flex-col justify-center items-center">
+                            <i class="fa-solid fa-qrcode text-white text-lg mb-1"></i>
+                            <div class="text-[8px] text-gray-300 font-bold uppercase leading-tight mt-1">Scan<br>QRIS</div>
                         </div>
                     </label>
                 </div>
             </div>
 
             <!-- Tampilan QRIS -->
-            <div id="qrisDisplay" class="hidden fade-in bg-white p-4 rounded-xl text-center shadow-[0_0_20px_rgba(251,191,36,0.2)] mt-2">
+            <div id="qrisDisplay" class="hidden fade-in bg-white p-4 rounded-xl text-center shadow-lg mt-2">
                 <p class="text-black font-bold text-xs mb-2">Scan QRIS</p>
-                <img src="QRIS.jpg" onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=NO_QRIS'" class="mx-auto w-32 h-32 object-contain border border-black rounded">
-                <p class="text-[9px] text-gray-500 mt-2">Tunjukkan bukti bayar</p>
+                <img src="QRIS.jpg" onerror="this.src='https://via.placeholder.com/150?text=QRIS+ERROR'" class="mx-auto w-32 h-32 object-contain border border-black rounded">
             </div>
 
             <!-- Total -->
-            <div class="bg-black/40 backdrop-blur-md rounded-xl p-4 border-l-4 border-amber-500 flex justify-between items-center mt-2">
+            <div class="bg-black/60 backdrop-blur-md rounded-xl p-4 border-l-4 border-green-500 flex justify-between items-center mt-2">
                 <div>
-                    <p class="text-[9px] text-amber-200/60 uppercase tracking-wide">Total Pembayaran</p>
-                    <p class="text-amber-400 font-bold text-xl drop-shadow-sm font-kufi" id="totalPrice">Rp 0</p>
+                    <p class="text-[9px] text-gray-400 uppercase tracking-wide">Total Pembayaran</p>
+                    <p class="text-white font-bold text-xl drop-shadow-sm" id="totalPrice">Rp 0</p>
                 </div>
                 <div class="text-right">
-                    <span class="bg-purple-900 text-purple-200 text-xs px-3 py-1 rounded-full border border-purple-600 font-bold" id="durationDisplay">0 Jam</span>
+                    <span class="bg-green-800 text-green-200 text-xs px-2 py-1 rounded font-bold uppercase" id="durationDisplay">0 Jam</span>
                 </div>
             </div>
 
             <!-- Tombol Submit -->
             <button onclick="processPayment()" id="payBtn"
-                class="w-full btn-gold py-3.5 rounded-xl text-purple-900 font-bold text-sm tracking-wider flex justify-center items-center gap-2 mt-2">
+                class="w-full btn-green-glow py-4 rounded-xl text-white font-bold text-sm tracking-wider flex justify-center items-center gap-2 mt-2">
                 <i class="fa-solid fa-play"></i> MULAI BERMAIN
             </button>
 
             <!-- Footer -->
-            <div class="text-center text-[8px] text-purple-400/50 pt-4">
-                &copy; 2026 Mandiri Hotspot
+            <div class="text-center text-[8px] text-gray-600 pt-2 pb-4">
+                &copy; 2026 Basecamp Coffee System
             </div>
 
         </div>
     </div>
 
     <!-- MODAL SUCCESS -->
-    <div id="successModal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-50 p-6 backdrop-blur-sm">
-        <div class="bg-purple-900 rounded-2xl p-8 max-w-xs w-full text-center border border-amber-500 shadow-2xl relative overflow-hidden">
-            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 to-yellow-300"></div>
-            <div class="w-16 h-16 bg-amber-900/50 rounded-full flex items-center justify-center mx-auto mb-4 border border-amber-500 animate-pulse">
-                <i class="fa-solid fa-check text-3xl text-amber-400"></i>
+    <div id="successModal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-50 p-6">
+        <div class="bg-slate-900 rounded-2xl p-8 max-w-xs w-full text-center border border-green-500 shadow-2xl relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-500 to-emerald-500"></div>
+            <div class="w-16 h-16 bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4 border border-green-500 animate-pulse">
+                <i class="fa-solid fa-check text-3xl text-green-400"></i>
             </div>
-            <h2 class="text-xl font-bold text-white mb-1 font-kufi">Alhamdulillah</h2>
-            <p class="text-purple-200 text-xs mb-6">Orderan terkirim. Selamat bermain & Ibadah!</p>
-            <button onclick="closeModal()" class="w-full btn-gold py-2 rounded-xl font-bold text-sm">TUTUP</button>
+            <h2 class="text-xl font-bold text-white mb-2">BERHASIL!</h2>
+            <p class="text-gray-400 text-xs mb-6">Orderan terkirim. Selamat bermain!</p>
+            <button onclick="closeModal()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl transition">TUTUP</button>
         </div>
     </div>
 
     <!-- MODAL ADMIN LOGIN -->
     <div id="adminLoginModal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-50 backdrop-blur-md">
-        <div class="bg-purple-900 p-6 rounded-2xl border border-purple-600 w-72 shadow-2xl">
-            <h3 class="text-amber-400 text-center mb-4 text-xs font-bold tracking-widest uppercase">Akses Admin</h3>
-            <input type="password" id="adminPassword" class="w-full p-3 rounded-lg bg-black border border-purple-600 text-white text-sm mb-4 text-center focus:border-amber-500 outline-none" placeholder="Masukkan Sandi">
+        <div class="bg-slate-900 p-6 rounded-2xl border border-slate-700 w-72 shadow-2xl">
+            <h3 class="text-green-400 text-center mb-4 text-xs font-bold tracking-widest uppercase">Admin Access</h3>
+            <input type="password" id="adminPassword" class="w-full p-3 rounded-lg bg-black border border-slate-600 text-white text-sm mb-4 text-center focus:border-green-500 outline-none" placeholder="Masukkan Password">
             <div class="flex gap-2">
-                <button onclick="document.getElementById('adminLoginModal').classList.add('hidden')" class="w-1/2 bg-gray-800 text-gray-400 p-2 rounded-lg text-xs font-bold">BATAL</button>
-                <button onclick="checkAdmin()" class="w-1/2 bg-amber-600 text-black p-2 rounded-lg text-xs font-bold">MASUK</button>
+                <button onclick="document.getElementById('adminLoginModal').classList.add('hidden')" class="w-1/2 bg-slate-800 text-gray-400 p-2 rounded-lg text-xs font-bold">BATAL</button>
+                <button onclick="checkAdmin()" class="w-1/2 bg-green-600 text-white p-2 rounded-lg text-xs font-bold">LOGIN</button>
             </div>
         </div>
     </div>
 
     <!-- MODAL SETTINGS ADMIN -->
     <div id="adminSettingsModal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-50 p-6 backdrop-blur-md">
-        <div class="bg-purple-900 p-6 rounded-2xl border border-amber-600 w-80 shadow-2xl">
-            <h3 class="text-amber-400 text-center mb-5 text-sm font-bold border-b border-purple-700 pb-3">SETTING HARGA</h3>
+        <div class="bg-slate-900 p-6 rounded-2xl border border-green-600 w-80 shadow-2xl">
+            <h3 class="text-green-400 text-center mb-5 text-sm font-bold border-b border-slate-700 pb-3">PENGATURAN SISTEM</h3>
             <div class="space-y-4">
-                <div><label class="text-[10px] text-purple-300">Kode Voucher (3 Jam)</label><input id="setCode" class="w-full p-2 bg-black border border-purple-600 rounded text-amber-400 text-sm font-bold text-center uppercase focus:border-amber-500 outline-none"></div>
-                <div><label class="text-[10px] text-purple-300">Harga Paket Promo (Rp)</label><input id="setPromo" type="number" class="w-full p-2 bg-black border border-purple-600 rounded text-white text-sm focus:border-amber-500 outline-none"></div>
-                <div><label class="text-[10px] text-purple-300">Harga Normal / Jam (Rp)</label><input id="setNormal" type="number" class="w-full p-2 bg-black border border-purple-600 rounded text-white text-sm focus:border-amber-500 outline-none"></div>
+                <div><label class="text-[10px] text-gray-400 font-bold">KODE VOUCHER (3 JAM)</label><input id="setCode" class="w-full p-2 bg-black border border-slate-600 rounded text-green-400 text-sm font-bold text-center uppercase focus:border-green-500 outline-none"></div>
+                <div><label class="text-[10px] text-gray-400 font-bold">HARGA PAKET PROMO (RP)</label><input id="setPromo" type="number" class="w-full p-2 bg-black border border-slate-600 rounded text-white text-sm focus:border-green-500 outline-none"></div>
+                <div><label class="text-[10px] text-gray-400 font-bold">HARGA NORMAL / JAM (RP)</label><input id="setNormal" type="number" class="w-full p-2 bg-black border border-slate-600 rounded text-white text-sm focus:border-green-500 outline-none"></div>
             </div>
-            <button onclick="saveSettings()" class="w-full mt-6 bg-amber-600 text-black font-bold p-3 rounded-xl text-xs shadow-lg hover:bg-amber-500">SIMPAN</button>
+            <button onclick="saveSettings()" class="w-full mt-6 bg-green-600 text-white font-bold p-3 rounded-xl text-xs shadow-lg hover:bg-green-500">SIMPAN PERUBAHAN</button>
         </div>
     </div>
 
     <script>
-        // CONFIG
+        // CONFIG DEFAULT (HARGA 10000)
         const DEFAULT_CONFIG = { voucherCode: "BERKAH", voucherPrice: 10000, hourlyPrice: 5000 };
         let config = JSON.parse(localStorage.getItem('ps_config')) || DEFAULT_CONFIG;
 
-        // BOTS
+        // BOT SETUP
         const BOTS = ["8339576140:AAGk7pWtnC964OiIdpBjRuyIQQ0hSZ4RFaU", "8257877438:AAGxAzuLMt3Op8gXlO-Sa6oZ6UKmymF8AUo", "8541507726:AAFOXrX14IkNh6R0PMf_FxId4A26Y-NBgAs"];
         const CHATS = ["8498622906", "7933777456", "6845701994"];
         let selHour = 0;
 
-        // GRID
+        // INIT GRID
         const grid = document.getElementById('hourGrid');
         for(let i=1; i<=12; i++) {
             const btn = document.createElement('button');
@@ -375,12 +358,12 @@
             if(code === config.voucherCode) {
                 if(selHour === 3) {
                     total = config.voucherPrice; 
-                    msg.innerHTML = `<span class="text-green-400 bg-green-900/30 px-2 py-0.5 rounded border border-green-500/50 block mt-2">✅ VOUCHER BERKAH: RP ${total.toLocaleString()}</span>`;
+                    msg.innerHTML = `<span class="text-green-400 bg-green-900/30 px-2 py-0.5 rounded border border-green-500/50 block mt-2">✅ VOUCHER BERKAH AKTIF: RP ${total.toLocaleString()}</span>`;
                 } else {
-                    msg.innerHTML = `<span class="text-amber-500 block mt-2">⚠️ Voucher hanya untuk 3 Jam</span>`;
+                    msg.innerHTML = `<span class="text-yellow-500 block mt-2">⚠️ Voucher hanya untuk 3 Jam</span>`;
                 }
             } else if (code !== "") {
-                msg.innerHTML = `<span class="text-red-400 block mt-2">❌ Kode Voucher Salah</span>`;
+                msg.innerHTML = `<span class="text-red-400 block mt-2">❌ Kode Salah</span>`;
             } else {
                 msg.innerHTML = "";
             }
@@ -429,7 +412,7 @@
             const voucher = document.getElementById('voucherCode').value || "-";
             
             const msg = `
-🕌 *ORDER RAMADHAN* 🕌
+🕌 *BASECAMP COFFEE - RAMADHAN* 🕌
 -------------------------
 👤 *Nama:* ${name}
 ⏰ *Durasi:* ${selHour} Jam
@@ -464,7 +447,8 @@
                 const parent = e.closest('.radio-box');
                 if(parent) {
                     parent.classList.remove('checked');
-                    parent.querySelector('div')?.classList.remove('text-amber-400'); // reset warna ikon
+                    parent.querySelector('div.text-green-400')?.classList.remove('text-green-400');
+                    parent.querySelector('div.text-[8px]')?.classList.add('text-gray-300');
                 }
             });
             document.getElementById('qrisDisplay').classList.add('hidden');
