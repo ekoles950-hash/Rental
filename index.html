@@ -283,18 +283,18 @@
 
             <!-- Footer -->
             <div class="text-center text-[8px] text-gray-600 pt-2 pb-4">
-                &copy; 2026 Basecamp Coffee System (AI Powered)
+                &copy; 2026 Basecamp Coffee System (AI & Admin Supported)
             </div>
 
         </div>
     </div>
 
-    <!-- TMBOL CHAT MENGAMBANG (DIPINDAH KE KIRI BAWAH & LOGO WHATSAPP) -->
+    <!-- TMBOL CHAT MENGAMBANG (KIRI BAWAH) -->
     <button onclick="toggleChat()" class="fixed bottom-6 left-6 bg-whatsapp hover-bg-whatsapp text-white w-14 h-14 rounded-full shadow-[0_0_15px_rgba(37,211,102,0.5)] z-40 flex items-center justify-center transition transform active:scale-95">
         <i class="fa-brands fa-whatsapp text-3xl"></i>
     </button>
 
-    <!-- KOTAK CHAT IN-APP (TETAP DI KIRI BAWAH) -->
+    <!-- KOTAK CHAT IN-APP (KIRI BAWAH) -->
     <div id="chatWidget" class="hidden fixed bottom-24 left-6 w-72 sm:w-80 bg-gray-900 border border-gray-700 rounded-2xl shadow-2xl z-50 flex flex-col overflow-hidden fade-in">
         <!-- Chat Header -->
         <div class="bg-gradient-to-r from-green-700 to-green-900 p-3 flex justify-between items-center">
@@ -314,10 +314,10 @@
         
         <!-- Chat Body -->
         <div id="chatMessages" class="p-3 h-64 bg-[#111827] flex flex-col gap-3 overflow-y-auto">
-            <div class="text-center text-[9px] text-gray-500 my-2">Gemini AI & Live Support</div>
+            <div class="text-center text-[9px] text-gray-500 my-2">Live Support</div>
             <!-- Initial Auto Message -->
             <div class="chat-bubble-admin fade-in">
-                Halo lur! 👋 Nyong asisten AI Basecamp Coffee. Ana sing bisa tek bantu soal rental PS kiye?
+                Halo lur! 👋 Ana sing bisa dibantu soal rental PS kiye? Ngomong bae, ngko diwales karo Admin.
             </div>
         </div>
         
@@ -368,9 +368,6 @@
     </div>
 
     <script>
-        // API KEY GEMINI (Disediakan oleh environment)
-        const apiKey = ""; 
-
         // === CONFIGURASI UTAMA ===
         const DEFAULT_CONFIG = { voucherCode: "HARI INI", voucherPrice: 10000, hourlyPrice: 5000 };
         let config = JSON.parse(localStorage.getItem('ps_config')) || DEFAULT_CONFIG;
@@ -384,7 +381,6 @@
         let selHour = 0;
         let chatHistory = [];
 
-        // Custom Toast untuk menggantikan alert()
         function showToast(msg) {
             const toast = document.createElement('div');
             toast.className = 'fixed top-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-5 py-3 rounded-xl border border-green-500 shadow-2xl z-[100] fade-in text-xs font-bold text-center';
@@ -450,12 +446,67 @@
         function updateSummary() { calc(); }
 
         // ==========================================
-        // FITUR LIVE CHAT DENGAN GEMINI AI (LLM)
+        // FITUR LIVE CHAT (GEMINI AI + MANUAL TELEGRAM)
         // ==========================================
+        let lastMsgId = 0; 
+        
+        // 1. Ambil state ID pesan terakhir saat web baru direfresh
+        // Supaya riwayat obrolan lama tidak ditarik lagi.
+        async function initTelegramChat() {
+            try {
+                const res = await fetch(`https://api.telegram.org/bot${CHAT_BOT_TOKEN}/getUpdates`);
+                const data = await res.json();
+                if (data.ok && data.result.length > 0) {
+                    let maxId = 0;
+                    data.result.forEach(u => {
+                        if(u.message && u.message.message_id > maxId) maxId = u.message.message_id;
+                    });
+                    lastMsgId = maxId;
+                }
+            } catch (e) { console.log("Gagal inisialisasi telegram"); }
+            
+            // Setelah init, panggil fungsi polling terus menerus
+            pollTelegram();
+        }
+
+        // 2. Cek secara berkala apakah Admin balas dari Telegram
+        async function pollTelegram() {
+            try {
+                const res = await fetch(`https://api.telegram.org/bot${CHAT_BOT_TOKEN}/getUpdates`);
+                const data = await res.json();
+                
+                if (data.ok && data.result.length > 0) {
+                    data.result.forEach(update => {
+                        const msg = update.message;
+                        // Cek jika pesan lebih baru dan dari Admin (7933777456)
+                        if (msg && msg.from && msg.from.id.toString() === ADMIN_CHAT_ID && msg.message_id > lastMsgId) {
+                            lastMsgId = msg.message_id;
+                            if (msg.text) {
+                                // Tampilkan pesan Admin di layar pelanggan
+                                addBubble(msg.text, 'admin');
+                                chatHistory.push({ sender: 'model', text: msg.text });
+                                
+                                // Jika chat sedang ketutup, paksa buka
+                                const chatWidget = document.getElementById('chatWidget');
+                                if(chatWidget.classList.contains('hidden')) {
+                                    chatWidget.classList.remove('hidden');
+                                }
+                            }
+                        }
+                    });
+                }
+            } catch (e) {}
+            
+            // Ulangi polling setiap 3 detik
+            setTimeout(pollTelegram, 3000);
+        }
+
+        // Start integrasi
+        initTelegramChat();
+
         function toggleChat() {
             const chatWidget = document.getElementById('chatWidget');
-            const isHidden = chatWidget.classList.contains('hidden');
-            if(isHidden) {
+            if(chatWidget.classList.contains('hidden')) {
                 chatWidget.classList.remove('hidden');
             } else {
                 chatWidget.classList.add('hidden');
@@ -466,96 +517,21 @@
             if(e.key === 'Enter') sendChatMessage();
         }
 
-        async function fetchGeminiResponse(userMessage) {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-            const jamSekarang = new Date().getHours();
-            const statusBuka = (jamSekarang >= 0) ? "Saat ini TOKO SEDANG BUKA (sedang mode tes 24 jam)." : "Saat ini TOKO SEDANG TUTUP (buka jam 12:00 - 24:00)."; // Sesuaikan logika jam
-
-            const systemPrompt = `Kamu adalah AI Asisten Customer Service untuk rental PlayStation bernama "Basecamp Coffee". 
-            Identitas kamu ramah, asyik, dan gunakan bahasa campuran Indonesia dan Jawa Ngapak khas Banjarnegara (Banyumasan) seperti kata "koh", "lur", "nyong", "rika", "kiye".
-            Informasi penting yang harus kamu tahu:
-            - Harga sewa PS normal: Rp 5.000 / jam.
-            - Ada promo khusus: Jika main 3 jam dan masukkan kode voucher "HARI INI", harganya diskon jadi Rp 10.000 saja.
-            - Jam Buka normal: 12:00 siang sampai 24:00 malam. 
-            - Kondisi real-time: ${statusBuka}
-            - Pembayaran bisa via Kasir, Kotak di atas TV, atau QRIS.
-            Jawablah dengan singkat, padat, dan ramah. Jika ada yang menanyakan sesuatu di luar rental PS, arahkan kembali dengan sopan.`;
-
-            // Build payload with history
-            let contents = [{ role: "user", parts: [{ text: systemPrompt }] }, { role: "model", parts: [{ text: "Oke lur, nyong paham. Nyong siap bantu pelanggan." }] }];
-            
-            chatHistory.forEach(msg => {
-                contents.push({ role: msg.sender === 'user' ? 'user' : 'model', parts: [{ text: msg.text }] });
-            });
-            contents.push({ role: "user", parts: [{ text: userMessage }] });
-
-            try {
-                const response = await fetch(url, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ contents: contents })
-                });
-                const data = await response.json();
-                if(data.candidates && data.candidates.length > 0) {
-                    return data.candidates[0].content.parts[0].text;
-                } else {
-                    throw new Error("No candidates");
-                }
-            } catch (e) {
-                console.error(e);
-                return "Ngapunten lur, sistem e agi eror sedela. Jajal maning ya. 🙏";
-            }
-        }
-
         async function sendChatMessage() {
             const input = document.getElementById('chatInput');
             const text = input.value.trim();
             if(!text) return;
 
-            // 1. Tampilkan di UI
+            // 1. Tampilkan di UI web
             addBubble(text, 'user');
             input.value = '';
             
             // Simpan ke history
             chatHistory.push({ sender: 'user', text: text });
             
-            // Kirim salinan ke Telegram Admin agar admin bisa pantau percakapan dengan AI
+            // 2. Langsung teruskan pesan ke Telegram Admin agar Admin bisa membalas secara manual
             const namaPelanggan = document.getElementById('renterName').value || "Tamu";
-            fetch(`https://api.telegram.org/bot${CHAT_BOT_TOKEN}/sendMessage?chat_id=${ADMIN_CHAT_ID}&text=${encodeURIComponent(`💬 *[${namaPelanggan}] ke AI:*\n"${text}"`)}&parse_mode=Markdown`);
-
-            // 2. Tampilkan indikator mengetik
-            const typingId = 'typing-' + Date.now();
-            const chatMsgs = document.getElementById('chatMessages');
-            const typingDiv = document.createElement('div');
-            typingDiv.id = typingId;
-            typingDiv.className = 'chat-bubble-admin fade-in typing-indicator';
-            typingDiv.innerHTML = '<span></span><span></span><span></span>';
-            chatMsgs.appendChild(typingDiv);
-            chatMsgs.scrollTop = chatMsgs.scrollHeight;
-
-            // 3. Panggil Gemini LLM
-            let retryCount = 0;
-            let aiReply = "";
-            while (retryCount < 5) {
-                try {
-                    aiReply = await fetchGeminiResponse(text);
-                    break;
-                } catch(err) {
-                    retryCount++;
-                    await new Promise(r => setTimeout(r, Math.pow(2, retryCount) * 1000));
-                }
-            }
-
-            // Hapus typing indikator
-            const tDiv = document.getElementById(typingId);
-            if(tDiv) tDiv.remove();
-
-            // 4. Tampilkan balasan Gemini
-            addBubble(aiReply, 'admin');
-            chatHistory.push({ sender: 'model', text: aiReply });
-            
-            // Kirim log balasan AI ke admin
-            fetch(`https://api.telegram.org/bot${CHAT_BOT_TOKEN}/sendMessage?chat_id=${ADMIN_CHAT_ID}&text=${encodeURIComponent(`🤖 *AI membalas:*\n"${aiReply}"`)}&parse_mode=Markdown`);
+            fetch(`https://api.telegram.org/bot${CHAT_BOT_TOKEN}/sendMessage?chat_id=${ADMIN_CHAT_ID}&text=${encodeURIComponent(`💬 *[${namaPelanggan}]:*\n"${text}"`)}&parse_mode=Markdown`);
         }
 
         function addBubble(text, sender) {
@@ -566,46 +542,6 @@
             chatMsgs.appendChild(div);
             chatMsgs.scrollTop = chatMsgs.scrollHeight;
         }
-
-        // Fetch pesan terbaru dari bot telegram saat chat dibuka
-        let lastMsgId = 0; 
-        let pollTimer = null;
-
-        async function initTelegramChat() {
-            try {
-                const res = await fetch(`https://api.telegram.org/bot${CHAT_BOT_TOKEN}/getUpdates`);
-                const data = await res.json();
-                if(data.ok && data.result.length > 0) {
-                    lastMsgId = data.result[data.result.length - 1].message.message_id;
-                }
-            } catch(e) {}
-        }
-
-        async function pollTelegram() {
-            const chatWidget = document.getElementById('chatWidget');
-            if(chatWidget.classList.contains('hidden')) return;
-            try {
-                const res = await fetch(`https://api.telegram.org/bot${CHAT_BOT_TOKEN}/getUpdates`);
-                const data = await res.json();
-                
-                if(data.ok && data.result.length > 0) {
-                    data.result.forEach(update => {
-                        const msg = update.message;
-                        if(msg && msg.message_id > lastMsgId && msg.from.id.toString() === ADMIN_CHAT_ID) {
-                            lastMsgId = msg.message_id;
-                            if(msg.text) {
-                                addBubble(msg.text, 'admin');
-                                chatHistory.push({ sender: 'model', text: msg.text });
-                            }
-                        }
-                    });
-                }
-            } catch(e) {}
-            pollTimer = setTimeout(pollTelegram, 3000);
-        }
-        
-        // Mulai polling saat load
-        initTelegramChat().then(() => pollTelegram());
 
         // === ADMIN PANEL ===
         function openAdminLogin() { document.getElementById('adminLoginModal').classList.remove('hidden'); }
@@ -695,4 +631,4 @@
         }
     </script>
 </body>
-    </html>
+</html>
