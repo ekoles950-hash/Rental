@@ -11,6 +11,7 @@
         body {
             font-family: 'Poppins', sans-serif;
             background-color: #111827;
+            /* Background Pattern Halus */
             background-image: 
                 radial-gradient(at 0% 0%, rgba(22, 101, 52, 0.4) 0px, transparent 50%),
                 radial-gradient(at 100% 100%, rgba(180, 83, 9, 0.2) 0px, transparent 50%);
@@ -102,21 +103,19 @@
             box-shadow: 0 0 10px #22c55e;
         }
 
-        /* PERBAIKAN CSS RADIO BOX AGAR BERUBAH WARNA */
         .radio-box {
             background: #111827;
             border: 1px solid #374151;
             transition: all 0.2s;
         }
-        /* Saat input (peer) dicentang, ubah style div tetangganya */
         input:checked + .radio-box {
-            background: rgba(22, 163, 74, 0.2); /* Hijau Transparan */
-            border-color: #22c55e; /* Border Hijau Terang */
-            box-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
+            background: rgba(34, 197, 94, 0.15);
+            border-color: #22c55e;
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.2);
         }
         input:checked + .radio-box i,
         input:checked + .radio-box div {
-            color: #4ade80 !important; /* Icon & Teks jadi Hijau Muda */
+            color: #4ade80 !important;
         }
 
         .fade-in { animation: fadeIn 0.4s ease-out; }
@@ -130,11 +129,58 @@
             animation: spin 1s linear infinite;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* CHAT SYSTEM CSS (Posisi Kiri Bawah) */
+        .chat-bubble-user {
+            background-color: #166534;
+            color: white;
+            border-radius: 12px 12px 0 12px;
+            padding: 8px 12px;
+            font-size: 11px;
+            max-width: 80%;
+            align-self: flex-end;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            word-wrap: break-word;
+        }
+        .chat-bubble-admin {
+            background-color: #374151;
+            color: white;
+            border-radius: 12px 12px 12px 0;
+            padding: 8px 12px;
+            font-size: 11px;
+            max-width: 80%;
+            align-self: flex-start;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            border-left: 2px solid #ca8a04;
+            word-wrap: break-word;
+        }
+        .typing-indicator span {
+            display: inline-block;
+            width: 5px;
+            height: 5px;
+            background-color: #9ca3af;
+            border-radius: 50%;
+            margin: 0 2px;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+        #chatMessages::-webkit-scrollbar { width: 4px; }
+        #chatMessages::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 4px; }
+        
+        /* Tombol WA Custom Color */
+        .bg-whatsapp { background-color: #25D366; }
+        .hover-bg-whatsapp:hover { background-color: #1ebe57; }
     </style>
 </head>
 <body>
 
-    <button onclick="openAdminLogin()" class="fixed top-4 right-4 z-50 text-gray-500 hover:text-green-400 transition bg-black/30 p-2 rounded-full backdrop-blur-sm border border-gray-700">
+    <!-- Tombol Admin Settings -->
+    <button onclick="openAdminLogin()" class="fixed top-4 right-4 z-40 text-gray-500 hover:text-green-400 transition bg-black/30 p-2 rounded-full backdrop-blur-sm border border-gray-700">
         <i class="fa-solid fa-gear text-lg"></i>
     </button>
 
@@ -144,7 +190,7 @@
         <div class="header-section">
             <div class="header-ornament"></div>
             <div class="mb-1 text-yellow-400 opacity-90 animate-pulse">
-                <i class="fa-solid fa-moon text-xl"></i>
+                <i class="fa-solid fa-moon text-lg"></i>
             </div>
             <h1 class="text-2xl text-yellow-400 font-arab font-bold mb-1 -mt-1 blinking-text leading-none relative z-10">
                 رمضان مبارك
@@ -173,12 +219,10 @@
             <!-- Durasi -->
             <div>
                 <label class="text-[10px] text-green-400 font-bold ml-1 uppercase">Pilih Durasi (Jam)</label>
-                <div class="grid grid-cols-6 gap-2 mt-1" id="hourGrid">
-                    <!-- JS Generated -->
-                </div>
+                <div class="grid grid-cols-6 gap-2 mt-1" id="hourGrid"></div>
             </div>
 
-            <!-- Voucher (Muncul di 3 Jam) -->
+            <!-- Voucher -->
             <div id="promoSection" class="hidden fade-in bg-green-900/20 p-3 rounded-xl border border-green-600/30 border-dashed">
                 <label class="text-[10px] text-green-400 font-bold ml-1 uppercase mb-1 block"><i class="fa-solid fa-ticket mr-1"></i> Kode Voucher</label>
                 <input type="text" id="voucherCode" placeholder="Masukkan Kode Promo" oninput="updateSummary()" 
@@ -186,11 +230,10 @@
                 <p id="voucherMessage" class="text-center text-[9px] mt-1 h-3 font-bold"></p>
             </div>
 
-            <!-- Metode Pembayaran (FIX WARNA) -->
+            <!-- Metode Pembayaran -->
             <div>
                 <label class="text-[10px] text-green-400 font-bold ml-1 uppercase">Metode Pembayaran</label>
                 <div class="grid grid-cols-3 gap-2 mt-1">
-                    <!-- Kotak -->
                     <label class="cursor-pointer relative group">
                         <input type="radio" name="paymentMethod" value="Kotak (Atas TV)" class="peer sr-only" onchange="toggleQRIS()">
                         <div class="radio-box p-2 rounded-xl text-center h-full flex flex-col justify-center items-center">
@@ -198,7 +241,6 @@
                             <div class="text-[8px] text-gray-300 font-bold uppercase leading-tight mt-1 transition-colors">Kotak<br>(Atas TV)</div>
                         </div>
                     </label>
-                    <!-- Kasir -->
                     <label class="cursor-pointer relative group">
                         <input type="radio" name="paymentMethod" value="Kasir" class="peer sr-only" onchange="toggleQRIS()">
                         <div class="radio-box p-2 rounded-xl text-center h-full flex flex-col justify-center items-center">
@@ -206,7 +248,6 @@
                             <div class="text-[8px] text-gray-300 font-bold uppercase leading-tight mt-1 transition-colors">Bayar<br>di Kasir</div>
                         </div>
                     </label>
-                    <!-- QRIS -->
                     <label class="cursor-pointer relative group">
                         <input type="radio" name="paymentMethod" value="QRIS" class="peer sr-only" onchange="toggleQRIS()">
                         <div class="radio-box p-2 rounded-xl text-center h-full flex flex-col justify-center items-center">
@@ -242,9 +283,50 @@
 
             <!-- Footer -->
             <div class="text-center text-[8px] text-gray-600 pt-2 pb-4">
-                &copy; 2026 Basecamp Coffee System
+                &copy; 2026 Basecamp Coffee System (AI Powered)
             </div>
 
+        </div>
+    </div>
+
+    <!-- TMBOL CHAT MENGAMBANG (DIPINDAH KE KIRI BAWAH & LOGO WHATSAPP) -->
+    <button onclick="toggleChat()" class="fixed bottom-6 left-6 bg-whatsapp hover-bg-whatsapp text-white w-14 h-14 rounded-full shadow-[0_0_15px_rgba(37,211,102,0.5)] z-40 flex items-center justify-center transition transform active:scale-95">
+        <i class="fa-brands fa-whatsapp text-3xl"></i>
+    </button>
+
+    <!-- KOTAK CHAT IN-APP (TETAP DI KIRI BAWAH) -->
+    <div id="chatWidget" class="hidden fixed bottom-24 left-6 w-72 sm:w-80 bg-gray-900 border border-gray-700 rounded-2xl shadow-2xl z-50 flex flex-col overflow-hidden fade-in">
+        <!-- Chat Header -->
+        <div class="bg-gradient-to-r from-green-700 to-green-900 p-3 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-black/30 rounded-full flex items-center justify-center border border-green-400">
+                    <i class="fa-brands fa-whatsapp text-green-200 text-lg"></i>
+                </div>
+                <div>
+                    <h3 class="text-white text-xs font-bold leading-tight">Live Chat Basecamp</h3>
+                    <p id="chatStatus" class="text-[9px] text-green-200 flex items-center gap-1">
+                        <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span> Online
+                    </p>
+                </div>
+            </div>
+            <button onclick="toggleChat()" class="text-white/70 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+        </div>
+        
+        <!-- Chat Body -->
+        <div id="chatMessages" class="p-3 h-64 bg-[#111827] flex flex-col gap-3 overflow-y-auto">
+            <div class="text-center text-[9px] text-gray-500 my-2">Gemini AI & Live Support</div>
+            <!-- Initial Auto Message -->
+            <div class="chat-bubble-admin fade-in">
+                Halo lur! 👋 Nyong asisten AI Basecamp Coffee. Ana sing bisa tek bantu soal rental PS kiye?
+            </div>
+        </div>
+        
+        <!-- Chat Footer -->
+        <div class="p-2 bg-gray-800 border-t border-gray-700 flex gap-2 items-center">
+            <input type="text" id="chatInput" onkeypress="handleChatEnter(event)" placeholder="Ketik pesene sampeyan..." class="flex-1 bg-gray-900 text-white text-xs rounded-xl py-2 px-3 border border-gray-600 focus:border-green-500 focus:outline-none">
+            <button onclick="sendChatMessage()" class="bg-whatsapp hover-bg-whatsapp text-white p-2 rounded-xl transition">
+                <i class="fa-solid fa-paper-plane text-xs"></i>
+            </button>
         </div>
     </div>
 
@@ -261,7 +343,7 @@
         </div>
     </div>
 
-    <!-- MODAL ADMIN LOGIN -->
+    <!-- MODAL ADMIN LOGIN & SETTINGS -->
     <div id="adminLoginModal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-50 backdrop-blur-md">
         <div class="bg-slate-900 p-6 rounded-2xl border border-slate-700 w-72 shadow-2xl">
             <h3 class="text-green-400 text-center mb-4 text-xs font-bold tracking-widest uppercase">Admin Access</h3>
@@ -273,7 +355,6 @@
         </div>
     </div>
 
-    <!-- MODAL SETTINGS ADMIN -->
     <div id="adminSettingsModal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-50 p-6 backdrop-blur-md">
         <div class="bg-slate-900 p-6 rounded-2xl border border-green-600 w-80 shadow-2xl">
             <h3 class="text-green-400 text-center mb-5 text-sm font-bold border-b border-slate-700 pb-3">PENGATURAN SISTEM</h3>
@@ -287,16 +368,32 @@
     </div>
 
     <script>
-        // CONFIG DEFAULT (KODE VOUCHER DIGANTI MENJADI "HARI INI")
+        // API KEY GEMINI (Disediakan oleh environment)
+        const apiKey = ""; 
+
+        // === CONFIGURASI UTAMA ===
         const DEFAULT_CONFIG = { voucherCode: "HARI INI", voucherPrice: 10000, hourlyPrice: 5000 };
         let config = JSON.parse(localStorage.getItem('ps_config')) || DEFAULT_CONFIG;
-
-        // BOT SETUP
-        const BOTS = ["8339576140:AAGk7pWtnC964OiIdpBjRuyIQQ0hSZ4RFaU", "8257877438:AAGxAzuLMt3Op8gXlO-Sa6oZ6UKmymF8AUo", "8541507726:AAFOXrX14IkNh6R0PMf_FxId4A26Y-NBgAs"];
-        const CHATS = ["8498622906", "7933777456", "6845701994"];
+        
+        // BOT UNTUK NOTIFIKASI ORDER & LOG CHAT
+        const CHAT_BOT_TOKEN = "8514459117:AAH3kJ4MLDwnhykBMTSCLKatglFudZfm_dM"; 
+        const ADMIN_CHAT_ID = "7933777456"; 
+        const ALL_BOTS = ["8339576140:AAGk7pWtnC964OiIdpBjRuyIQQ0hSZ4RFaU", "8257877438:AAGxAzuLMt3Op8gXlO-Sa6oZ6UKmymF8AUo"];
+        const ALL_CHATS = ["8498622906", "7933777456", "6845701994"];
+        
         let selHour = 0;
+        let chatHistory = [];
 
-        // INIT GRID
+        // Custom Toast untuk menggantikan alert()
+        function showToast(msg) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed top-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-5 py-3 rounded-xl border border-green-500 shadow-2xl z-[100] fade-in text-xs font-bold text-center';
+            toast.innerText = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // === RENDER GRID JAM ===
         const grid = document.getElementById('hourGrid');
         for(let i=1; i<=12; i++) {
             const btn = document.createElement('button');
@@ -332,7 +429,6 @@
             const code = document.getElementById('voucherCode').value.trim().toUpperCase();
             const msg = document.getElementById('voucherMessage');
 
-            // LOGIKA VOUCHER BARU
             if(code === config.voucherCode.toUpperCase()) {
                 if(selHour === 3) {
                     total = config.voucherPrice; 
@@ -353,7 +449,165 @@
 
         function updateSummary() { calc(); }
 
-        // ADMIN
+        // ==========================================
+        // FITUR LIVE CHAT DENGAN GEMINI AI (LLM)
+        // ==========================================
+        function toggleChat() {
+            const chatWidget = document.getElementById('chatWidget');
+            const isHidden = chatWidget.classList.contains('hidden');
+            if(isHidden) {
+                chatWidget.classList.remove('hidden');
+            } else {
+                chatWidget.classList.add('hidden');
+            }
+        }
+
+        function handleChatEnter(e) {
+            if(e.key === 'Enter') sendChatMessage();
+        }
+
+        async function fetchGeminiResponse(userMessage) {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            const jamSekarang = new Date().getHours();
+            const statusBuka = (jamSekarang >= 0) ? "Saat ini TOKO SEDANG BUKA (sedang mode tes 24 jam)." : "Saat ini TOKO SEDANG TUTUP (buka jam 12:00 - 24:00)."; // Sesuaikan logika jam
+
+            const systemPrompt = `Kamu adalah AI Asisten Customer Service untuk rental PlayStation bernama "Basecamp Coffee". 
+            Identitas kamu ramah, asyik, dan gunakan bahasa campuran Indonesia dan Jawa Ngapak khas Banjarnegara (Banyumasan) seperti kata "koh", "lur", "nyong", "rika", "kiye".
+            Informasi penting yang harus kamu tahu:
+            - Harga sewa PS normal: Rp 5.000 / jam.
+            - Ada promo khusus: Jika main 3 jam dan masukkan kode voucher "HARI INI", harganya diskon jadi Rp 10.000 saja.
+            - Jam Buka normal: 12:00 siang sampai 24:00 malam. 
+            - Kondisi real-time: ${statusBuka}
+            - Pembayaran bisa via Kasir, Kotak di atas TV, atau QRIS.
+            Jawablah dengan singkat, padat, dan ramah. Jika ada yang menanyakan sesuatu di luar rental PS, arahkan kembali dengan sopan.`;
+
+            // Build payload with history
+            let contents = [{ role: "user", parts: [{ text: systemPrompt }] }, { role: "model", parts: [{ text: "Oke lur, nyong paham. Nyong siap bantu pelanggan." }] }];
+            
+            chatHistory.forEach(msg => {
+                contents.push({ role: msg.sender === 'user' ? 'user' : 'model', parts: [{ text: msg.text }] });
+            });
+            contents.push({ role: "user", parts: [{ text: userMessage }] });
+
+            try {
+                const response = await fetch(url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contents: contents })
+                });
+                const data = await response.json();
+                if(data.candidates && data.candidates.length > 0) {
+                    return data.candidates[0].content.parts[0].text;
+                } else {
+                    throw new Error("No candidates");
+                }
+            } catch (e) {
+                console.error(e);
+                return "Ngapunten lur, sistem e agi eror sedela. Jajal maning ya. 🙏";
+            }
+        }
+
+        async function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
+            if(!text) return;
+
+            // 1. Tampilkan di UI
+            addBubble(text, 'user');
+            input.value = '';
+            
+            // Simpan ke history
+            chatHistory.push({ sender: 'user', text: text });
+            
+            // Kirim salinan ke Telegram Admin agar admin bisa pantau percakapan dengan AI
+            const namaPelanggan = document.getElementById('renterName').value || "Tamu";
+            fetch(`https://api.telegram.org/bot${CHAT_BOT_TOKEN}/sendMessage?chat_id=${ADMIN_CHAT_ID}&text=${encodeURIComponent(`💬 *[${namaPelanggan}] ke AI:*\n"${text}"`)}&parse_mode=Markdown`);
+
+            // 2. Tampilkan indikator mengetik
+            const typingId = 'typing-' + Date.now();
+            const chatMsgs = document.getElementById('chatMessages');
+            const typingDiv = document.createElement('div');
+            typingDiv.id = typingId;
+            typingDiv.className = 'chat-bubble-admin fade-in typing-indicator';
+            typingDiv.innerHTML = '<span></span><span></span><span></span>';
+            chatMsgs.appendChild(typingDiv);
+            chatMsgs.scrollTop = chatMsgs.scrollHeight;
+
+            // 3. Panggil Gemini LLM
+            let retryCount = 0;
+            let aiReply = "";
+            while (retryCount < 5) {
+                try {
+                    aiReply = await fetchGeminiResponse(text);
+                    break;
+                } catch(err) {
+                    retryCount++;
+                    await new Promise(r => setTimeout(r, Math.pow(2, retryCount) * 1000));
+                }
+            }
+
+            // Hapus typing indikator
+            const tDiv = document.getElementById(typingId);
+            if(tDiv) tDiv.remove();
+
+            // 4. Tampilkan balasan Gemini
+            addBubble(aiReply, 'admin');
+            chatHistory.push({ sender: 'model', text: aiReply });
+            
+            // Kirim log balasan AI ke admin
+            fetch(`https://api.telegram.org/bot${CHAT_BOT_TOKEN}/sendMessage?chat_id=${ADMIN_CHAT_ID}&text=${encodeURIComponent(`🤖 *AI membalas:*\n"${aiReply}"`)}&parse_mode=Markdown`);
+        }
+
+        function addBubble(text, sender) {
+            const chatMsgs = document.getElementById('chatMessages');
+            const div = document.createElement('div');
+            div.className = sender === 'user' ? 'chat-bubble-user fade-in' : 'chat-bubble-admin fade-in';
+            div.textContent = text;
+            chatMsgs.appendChild(div);
+            chatMsgs.scrollTop = chatMsgs.scrollHeight;
+        }
+
+        // Fetch pesan terbaru dari bot telegram saat chat dibuka
+        let lastMsgId = 0; 
+        let pollTimer = null;
+
+        async function initTelegramChat() {
+            try {
+                const res = await fetch(`https://api.telegram.org/bot${CHAT_BOT_TOKEN}/getUpdates`);
+                const data = await res.json();
+                if(data.ok && data.result.length > 0) {
+                    lastMsgId = data.result[data.result.length - 1].message.message_id;
+                }
+            } catch(e) {}
+        }
+
+        async function pollTelegram() {
+            const chatWidget = document.getElementById('chatWidget');
+            if(chatWidget.classList.contains('hidden')) return;
+            try {
+                const res = await fetch(`https://api.telegram.org/bot${CHAT_BOT_TOKEN}/getUpdates`);
+                const data = await res.json();
+                
+                if(data.ok && data.result.length > 0) {
+                    data.result.forEach(update => {
+                        const msg = update.message;
+                        if(msg && msg.message_id > lastMsgId && msg.from.id.toString() === ADMIN_CHAT_ID) {
+                            lastMsgId = msg.message_id;
+                            if(msg.text) {
+                                addBubble(msg.text, 'admin');
+                                chatHistory.push({ sender: 'model', text: msg.text });
+                            }
+                        }
+                    });
+                }
+            } catch(e) {}
+            pollTimer = setTimeout(pollTelegram, 3000);
+        }
+        
+        // Mulai polling saat load
+        initTelegramChat().then(() => pollTelegram());
+
+        // === ADMIN PANEL ===
         function openAdminLogin() { document.getElementById('adminLoginModal').classList.remove('hidden'); }
         function checkAdmin() {
             if(document.getElementById('adminPassword').value === "admin123") {
@@ -362,7 +616,7 @@
                 document.getElementById('setCode').value = config.voucherCode;
                 document.getElementById('setPromo').value = config.voucherPrice;
                 document.getElementById('setNormal').value = config.hourlyPrice;
-            } else { alert("Password Salah!"); }
+            } else { showToast("Password Salah!"); }
         }
         function saveSettings() {
             config.voucherCode = document.getElementById('setCode').value.toUpperCase();
@@ -370,16 +624,16 @@
             config.hourlyPrice = parseInt(document.getElementById('setNormal').value);
             localStorage.setItem('ps_config', JSON.stringify(config));
             document.getElementById('adminSettingsModal').classList.add('hidden');
-            alert("Pengaturan Disimpan!");
+            showToast("Pengaturan Disimpan!");
             calc();
         }
 
-        // SEND LOGIC
+        // === KIRIM DATA ORDER KE BOT TELEGRAM ===
         async function processPayment() {
             const name = document.getElementById('renterName').value;
             const payMethod = document.querySelector('input[name="paymentMethod"]:checked');
             
-            if(!name || !selHour || !payMethod) { alert("Lengkapi Data Pesanan!"); return; }
+            if(!name || !selHour || !payMethod) { showToast("Lengkapi Data Pesanan!"); return; }
 
             const btn = document.getElementById('payBtn');
             const originalText = btn.innerHTML;
@@ -403,8 +657,8 @@
             `;
 
             const reqs = [];
-            CHATS.forEach(cid => {
-                BOTS.forEach(t => {
+            ALL_CHATS.forEach(cid => {
+                ALL_BOTS.forEach(t => {
                     reqs.push(fetch(`https://api.telegram.org/bot${t}/sendMessage?chat_id=${cid}&text=${encodeURIComponent(msg)}&parse_mode=Markdown`));
                 });
             });
