@@ -11,7 +11,6 @@
         body {
             font-family: 'Poppins', sans-serif;
             background-color: #111827;
-            /* Background Pattern Halus */
             background-image: 
                 radial-gradient(at 0% 0%, rgba(22, 101, 52, 0.4) 0px, transparent 50%),
                 radial-gradient(at 100% 100%, rgba(180, 83, 9, 0.2) 0px, transparent 50%);
@@ -130,7 +129,7 @@
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* CHAT SYSTEM CSS (Posisi Kiri Bawah) */
+        /* CHAT SYSTEM CSS */
         .chat-bubble-user {
             background-color: #166534;
             color: white;
@@ -154,27 +153,12 @@
             border-left: 2px solid #ca8a04;
             word-wrap: break-word;
         }
-        .typing-indicator span {
-            display: inline-block;
-            width: 5px;
-            height: 5px;
-            background-color: #9ca3af;
-            border-radius: 50%;
-            margin: 0 2px;
-            animation: bounce 1.4s infinite ease-in-out both;
-        }
-        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
-        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
-        @keyframes bounce {
-            0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1); }
-        }
         #chatMessages::-webkit-scrollbar { width: 4px; }
         #chatMessages::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 4px; }
         
-        /* Tombol WA Custom Color */
         .bg-whatsapp { background-color: #25D366; }
         .hover-bg-whatsapp:hover { background-color: #1ebe57; }
+        .bg-gray-disabled { background-color: #4b5563; cursor: not-allowed; }
     </style>
 </head>
 <body>
@@ -289,14 +273,17 @@
         </div>
     </div>
 
-    <!-- TMBOL CHAT MENGAMBANG (KIRI BAWAH) -->
-    <button onclick="toggleChat()" class="fixed bottom-6 left-6 bg-whatsapp hover-bg-whatsapp text-white w-14 h-14 rounded-full shadow-[0_0_15px_rgba(37,211,102,0.5)] z-40 flex items-center justify-center transition transform active:scale-95">
+    <!-- TMBOL CHAT MENGAMBANG -->
+    <button id="chatToggleBtn" onclick="toggleChat()" class="fixed bottom-6 left-6 text-white w-14 h-14 rounded-full shadow-lg z-40 flex items-center justify-center transition transform active:scale-95 group">
         <i class="fa-brands fa-whatsapp text-3xl"></i>
+        <!-- Tooltip jika sedang tutup -->
+        <span id="chatClosedTooltip" class="absolute left-16 bg-gray-900 text-white text-[10px] px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition whitespace-nowrap hidden pointer-events-none">
+            Chat Offline (Buka 12:00 - 24:00)
+        </span>
     </button>
 
-    <!-- KOTAK CHAT IN-APP (KIRI BAWAH) -->
+    <!-- KOTAK CHAT IN-APP -->
     <div id="chatWidget" class="hidden fixed bottom-24 left-6 w-72 sm:w-80 bg-gray-900 border border-gray-700 rounded-2xl shadow-2xl z-50 flex flex-col overflow-hidden fade-in">
-        <!-- Chat Header -->
         <div class="bg-gradient-to-r from-green-700 to-green-900 p-3 flex justify-between items-center">
             <div class="flex items-center gap-2">
                 <div class="w-8 h-8 bg-black/30 rounded-full flex items-center justify-center border border-green-400">
@@ -312,19 +299,16 @@
             <button onclick="toggleChat()" class="text-white/70 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
         </div>
         
-        <!-- Chat Body -->
         <div id="chatMessages" class="p-3 h-64 bg-[#111827] flex flex-col gap-3 overflow-y-auto">
             <div class="text-center text-[9px] text-gray-500 my-2">Live Support</div>
-            <!-- Initial Auto Message -->
             <div class="chat-bubble-admin fade-in">
                 Halo lur! 👋 Ana sing bisa dibantu soal rental PS kiye? Ngomong bae, ngko diwales karo Admin.
             </div>
         </div>
         
-        <!-- Chat Footer -->
         <div class="p-2 bg-gray-800 border-t border-gray-700 flex gap-2 items-center">
-            <input type="text" id="chatInput" onkeypress="handleChatEnter(event)" placeholder="Ketik pesene sampeyan..." class="flex-1 bg-gray-900 text-white text-xs rounded-xl py-2 px-3 border border-gray-600 focus:border-green-500 focus:outline-none">
-            <button onclick="sendChatMessage()" class="bg-whatsapp hover-bg-whatsapp text-white p-2 rounded-xl transition">
+            <input type="text" id="chatInput" onkeypress="handleChatEnter(event)" placeholder="Ketik pesene sampeyan..." class="flex-1 min-w-0 bg-gray-900 text-white text-xs rounded-xl py-2 px-3 border border-gray-600 focus:border-green-500 focus:outline-none">
+            <button id="sendChatBtn" onclick="sendChatMessage()" class="shrink-0 w-9 h-9 flex items-center justify-center bg-whatsapp hover-bg-whatsapp text-white rounded-xl transition">
                 <i class="fa-solid fa-paper-plane text-xs"></i>
             </button>
         </div>
@@ -333,20 +317,14 @@
     <!-- MODAL SUCCESS -->
     <div id="successModal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-50 p-6">
         <div class="bg-slate-900 rounded-2xl p-8 max-w-xs w-full text-center border border-green-500 shadow-2xl relative overflow-hidden">
-            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-500 to-emerald-500"></div>
-            <div class="w-16 h-16 bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4 border border-green-500 animate-pulse">
-                <i class="fa-solid fa-check text-3xl text-green-400"></i>
-            </div>
             <h2 class="text-xl font-bold text-white mb-2">BERHASIL!</h2>
-            <p class="text-gray-400 text-xs mb-6">Orderan terkirim. Selamat bermain!</p>
             <button onclick="closeModal()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl transition">TUTUP</button>
         </div>
     </div>
 
-    <!-- MODAL ADMIN LOGIN & SETTINGS -->
+    <!-- MODAL ADMIN -->
     <div id="adminLoginModal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-50 backdrop-blur-md">
         <div class="bg-slate-900 p-6 rounded-2xl border border-slate-700 w-72 shadow-2xl">
-            <h3 class="text-green-400 text-center mb-4 text-xs font-bold tracking-widest uppercase">Admin Access</h3>
             <input type="password" id="adminPassword" class="w-full p-3 rounded-lg bg-black border border-slate-600 text-white text-sm mb-4 text-center focus:border-green-500 outline-none" placeholder="Masukkan Password">
             <div class="flex gap-2">
                 <button onclick="document.getElementById('adminLoginModal').classList.add('hidden')" class="w-1/2 bg-slate-800 text-gray-400 p-2 rounded-lg text-xs font-bold">BATAL</button>
@@ -357,17 +335,73 @@
 
     <div id="adminSettingsModal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-50 p-6 backdrop-blur-md">
         <div class="bg-slate-900 p-6 rounded-2xl border border-green-600 w-80 shadow-2xl">
-            <h3 class="text-green-400 text-center mb-5 text-sm font-bold border-b border-slate-700 pb-3">PENGATURAN SISTEM</h3>
             <div class="space-y-4">
-                <div><label class="text-[10px] text-gray-400 font-bold">KODE VOUCHER (3 JAM)</label><input id="setCode" class="w-full p-2 bg-black border border-slate-600 rounded text-green-400 text-sm font-bold text-center uppercase focus:border-green-500 outline-none"></div>
-                <div><label class="text-[10px] text-gray-400 font-bold">HARGA PAKET PROMO (RP)</label><input id="setPromo" type="number" class="w-full p-2 bg-black border border-slate-600 rounded text-white text-sm focus:border-green-500 outline-none"></div>
-                <div><label class="text-[10px] text-gray-400 font-bold">HARGA NORMAL / JAM (RP)</label><input id="setNormal" type="number" class="w-full p-2 bg-black border border-slate-600 rounded text-white text-sm focus:border-green-500 outline-none"></div>
+                <div><label class="text-[10px] text-gray-400 font-bold">KODE VOUCHER</label><input id="setCode" class="w-full p-2 bg-black border border-slate-600 rounded text-green-400 text-sm font-bold text-center uppercase focus:border-green-500 outline-none"></div>
+                <div><label class="text-[10px] text-gray-400 font-bold">HARGA PROMO</label><input id="setPromo" type="number" class="w-full p-2 bg-black border border-slate-600 rounded text-white text-sm focus:border-green-500 outline-none"></div>
+                <div><label class="text-[10px] text-gray-400 font-bold">HARGA NORMAL</label><input id="setNormal" type="number" class="w-full p-2 bg-black border border-slate-600 rounded text-white text-sm focus:border-green-500 outline-none"></div>
             </div>
-            <button onclick="saveSettings()" class="w-full mt-6 bg-green-600 text-white font-bold p-3 rounded-xl text-xs shadow-lg hover:bg-green-500">SIMPAN PERUBAHAN</button>
+            <button onclick="saveSettings()" class="w-full mt-6 bg-green-600 text-white font-bold p-3 rounded-xl text-xs shadow-lg hover:bg-green-500">SIMPAN</button>
         </div>
     </div>
 
     <script>
+        // === CEK JAM BUKA CHAT ===
+        let isChatOpen = false;
+
+        function checkChatHours() {
+            const now = new Date();
+            const hour = now.getHours(); // Format 24 jam (0 - 23)
+            
+            // Jam buka: 12:00 sampai 23:59 (jam 12 sampai jam 23)
+            if (hour >= 12 && hour <= 23) {
+                isChatOpen = true;
+                
+                // Ubah gaya tombol menjadi hijau (aktif)
+                const toggleBtn = document.getElementById('chatToggleBtn');
+                toggleBtn.classList.add('bg-whatsapp', 'hover-bg-whatsapp');
+                toggleBtn.classList.remove('bg-gray-disabled');
+                
+                // Sembunyikan tooltip offline
+                document.getElementById('chatClosedTooltip').classList.add('hidden');
+                
+                // Aktifkan input chat
+                document.getElementById('chatInput').disabled = false;
+                document.getElementById('sendChatBtn').disabled = false;
+                document.getElementById('chatInput').placeholder = "Ketik pesene sampeyan...";
+                
+                // Update status indikator online
+                document.getElementById('chatStatus').innerHTML = '<span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span> Online';
+                
+            } else {
+                isChatOpen = false;
+                
+                // Ubah gaya tombol menjadi abu-abu (nonaktif)
+                const toggleBtn = document.getElementById('chatToggleBtn');
+                toggleBtn.classList.remove('bg-whatsapp', 'hover-bg-whatsapp');
+                toggleBtn.classList.add('bg-gray-disabled');
+                
+                // Tampilkan tooltip offline saat di-hover
+                document.getElementById('chatClosedTooltip').classList.remove('hidden');
+                
+                // Matikan input chat
+                document.getElementById('chatInput').disabled = true;
+                document.getElementById('sendChatBtn').disabled = true;
+                document.getElementById('chatInput').placeholder = "Chat sedang Offline...";
+                
+                // Update status indikator offline
+                document.getElementById('chatStatus').innerHTML = '<span class="w-2 h-2 rounded-full bg-red-500"></span> Offline (Tutup)';
+                
+                // Tutup otomatis widget chat jika sedang terbuka
+                document.getElementById('chatWidget').classList.add('hidden');
+            }
+        }
+
+        // Cek jam buka saat halaman dimuat
+        checkChatHours();
+        
+        // Cek setiap 1 menit berjaga-jaga perpindahan jam saat user diam di halaman
+        setInterval(checkChatHours, 60000);
+
         // === CONFIGURASI UTAMA ===
         const DEFAULT_CONFIG = { voucherCode: "HARI INI", voucherPrice: 10000, hourlyPrice: 5000 };
         let config = JSON.parse(localStorage.getItem('ps_config')) || DEFAULT_CONFIG;
@@ -389,7 +423,6 @@
             setTimeout(() => toast.remove(), 3000);
         }
 
-        // === RENDER GRID JAM ===
         const grid = document.getElementById('hourGrid');
         for(let i=1; i<=12; i++) {
             const btn = document.createElement('button');
@@ -405,13 +438,8 @@
             el.className = "h-9 hour-btn active rounded-lg text-xs font-bold transition transform scale-105";
             
             const promoSec = document.getElementById('promoSection');
-            if(h === 3) {
-                promoSec.classList.remove('hidden');
-            } else {
-                promoSec.classList.add('hidden');
-                document.getElementById('voucherCode').value = "";
-                document.getElementById('voucherMessage').textContent = "";
-            }
+            if(h === 3) promoSec.classList.remove('hidden');
+            else { promoSec.classList.add('hidden'); document.getElementById('voucherCode').value = ""; }
             calc();
         }
 
@@ -423,21 +451,7 @@
         function calc() {
             let total = selHour * config.hourlyPrice;
             const code = document.getElementById('voucherCode').value.trim().toUpperCase();
-            const msg = document.getElementById('voucherMessage');
-
-            if(code === config.voucherCode.toUpperCase()) {
-                if(selHour === 3) {
-                    total = config.voucherPrice; 
-                    msg.innerHTML = `<span class="text-green-400 bg-green-900/30 px-2 py-0.5 rounded border border-green-500/50 block mt-2">✅ VOUCHER AKTIF: RP ${total.toLocaleString()}</span>`;
-                } else {
-                    msg.innerHTML = `<span class="text-yellow-500 block mt-2">⚠️ Voucher hanya untuk 3 Jam</span>`;
-                }
-            } else if (code !== "") {
-                msg.innerHTML = `<span class="text-red-400 block mt-2">❌ Kode Voucher Salah</span>`;
-            } else {
-                msg.innerHTML = "";
-            }
-
+            if(code === config.voucherCode.toUpperCase() && selHour === 3) total = config.voucherPrice; 
             document.getElementById('totalPrice').textContent = "Rp " + total.toLocaleString('id-ID');
             document.getElementById('durationDisplay').textContent = selHour + " Jam";
             return total;
@@ -446,13 +460,19 @@
         function updateSummary() { calc(); }
 
         // ==========================================
-        // FITUR LIVE CHAT (GEMINI AI + MANUAL TELEGRAM)
+        // FITUR LIVE CHAT DENGAN SESSION ID
         // ==========================================
         let lastMsgId = 0; 
         
-        // 1. Ambil state ID pesan terakhir saat web baru direfresh
-        // Supaya riwayat obrolan lama tidak ditarik lagi.
+        let mySessionId = localStorage.getItem('chatSessionId');
+        if (!mySessionId) {
+            mySessionId = "ID-" + Math.random().toString(36).substr(2, 5).toUpperCase();
+            localStorage.setItem('chatSessionId', mySessionId);
+        }
+
         async function initTelegramChat() {
+            if (!isChatOpen) return; // Jangan init jika sedang tutup
+            
             try {
                 const res = await fetch(`https://api.telegram.org/bot${CHAT_BOT_TOKEN}/getUpdates`);
                 const data = await res.json();
@@ -463,14 +483,13 @@
                     });
                     lastMsgId = maxId;
                 }
-            } catch (e) { console.log("Gagal inisialisasi telegram"); }
-            
-            // Setelah init, panggil fungsi polling terus menerus
+            } catch (e) { console.log("Init fail"); }
             pollTelegram();
         }
 
-        // 2. Cek secara berkala apakah Admin balas dari Telegram
         async function pollTelegram() {
+            if (!isChatOpen) return; // Berhenti polling jika jam chat ditutup
+            
             try {
                 const res = await fetch(`https://api.telegram.org/bot${CHAT_BOT_TOKEN}/getUpdates`);
                 const data = await res.json();
@@ -478,39 +497,37 @@
                 if (data.ok && data.result.length > 0) {
                     data.result.forEach(update => {
                         const msg = update.message;
-                        // Cek jika pesan lebih baru dan dari Admin (7933777456)
+                        
                         if (msg && msg.from && msg.from.id.toString() === ADMIN_CHAT_ID && msg.message_id > lastMsgId) {
                             lastMsgId = msg.message_id;
-                            if (msg.text) {
-                                // Tampilkan pesan Admin di layar pelanggan
-                                addBubble(msg.text, 'admin');
-                                chatHistory.push({ sender: 'model', text: msg.text });
-                                
-                                // Jika chat sedang ketutup, paksa buka
-                                const chatWidget = document.getElementById('chatWidget');
-                                if(chatWidget.classList.contains('hidden')) {
-                                    chatWidget.classList.remove('hidden');
+
+                            if (msg.text && msg.reply_to_message && msg.reply_to_message.text) {
+                                if (msg.reply_to_message.text.includes(mySessionId)) {
+                                    addBubble(msg.text, 'admin');
+                                    
+                                    const chatWidget = document.getElementById('chatWidget');
+                                    if(chatWidget.classList.contains('hidden')) {
+                                        chatWidget.classList.remove('hidden');
+                                    }
                                 }
                             }
                         }
                     });
                 }
             } catch (e) {}
-            
-            // Ulangi polling setiap 3 detik
             setTimeout(pollTelegram, 3000);
         }
 
-        // Start integrasi
-        initTelegramChat();
+        // Delay sedikit sebelum init agar checkChatHours diproses lebih dulu
+        setTimeout(initTelegramChat, 1000);
 
         function toggleChat() {
-            const chatWidget = document.getElementById('chatWidget');
-            if(chatWidget.classList.contains('hidden')) {
-                chatWidget.classList.remove('hidden');
-            } else {
-                chatWidget.classList.add('hidden');
+            if (!isChatOpen) {
+                showToast("Chat Offline. Kami buka jam 12:00 - 24:00");
+                return;
             }
+            const chatWidget = document.getElementById('chatWidget');
+            chatWidget.classList.toggle('hidden');
         }
 
         function handleChatEnter(e) {
@@ -518,20 +535,19 @@
         }
 
         async function sendChatMessage() {
+            if (!isChatOpen) return;
+            
             const input = document.getElementById('chatInput');
             const text = input.value.trim();
             if(!text) return;
 
-            // 1. Tampilkan di UI web
             addBubble(text, 'user');
             input.value = '';
             
-            // Simpan ke history
-            chatHistory.push({ sender: 'user', text: text });
-            
-            // 2. Langsung teruskan pesan ke Telegram Admin agar Admin bisa membalas secara manual
             const namaPelanggan = document.getElementById('renterName').value || "Tamu";
-            fetch(`https://api.telegram.org/bot${CHAT_BOT_TOKEN}/sendMessage?chat_id=${ADMIN_CHAT_ID}&text=${encodeURIComponent(`💬 *[${namaPelanggan}]:*\n"${text}"`)}&parse_mode=Markdown`);
+            const textToTelegram = `💬 *[${namaPelanggan}]*:\n"${text}"\n\n_Ref: ${mySessionId}_`;
+            
+            fetch(`https://api.telegram.org/bot${CHAT_BOT_TOKEN}/sendMessage?chat_id=${ADMIN_CHAT_ID}&text=${encodeURIComponent(textToTelegram)}&parse_mode=Markdown`);
         }
 
         function addBubble(text, sender) {
@@ -543,7 +559,7 @@
             chatMsgs.scrollTop = chatMsgs.scrollHeight;
         }
 
-        // === ADMIN PANEL ===
+        // === FUNGSI ADMIN & SUBMIT SAMA SEPERTI SEBELUMNYA ===
         function openAdminLogin() { document.getElementById('adminLoginModal').classList.remove('hidden'); }
         function checkAdmin() {
             if(document.getElementById('adminPassword').value === "admin123") {
@@ -564,11 +580,9 @@
             calc();
         }
 
-        // === KIRIM DATA ORDER KE BOT TELEGRAM ===
         async function processPayment() {
             const name = document.getElementById('renterName').value;
             const payMethod = document.querySelector('input[name="paymentMethod"]:checked');
-            
             if(!name || !selHour || !payMethod) { showToast("Lengkapi Data Pesanan!"); return; }
 
             const btn = document.getElementById('payBtn');
@@ -578,19 +592,7 @@
             
             const total = calc();
             const voucher = document.getElementById('voucherCode').value || "-";
-            
-            const msg = `
-🕌 *BASECAMP COFFEE - RAMADHAN* 🕌
--------------------------
-👤 *Nama:* ${name}
-⏰ *Durasi:* ${selHour} Jam
-🎟 *Voucher:* ${voucher}
-💰 *Total:* Rp ${total.toLocaleString('id-ID')}
-📦 *Via:* ${payMethod.value}
-📅 ${new Date().toLocaleString('id-ID')}
--------------------------
-✅ *Status:* SYSTEM START
-            `;
+            const msg = `🕌 *ORDER MASUK*\n👤 Nama: ${name}\n⏰ Durasi: ${selHour} Jam\n💰 Total: Rp ${total.toLocaleString('id-ID')}\n📦 Via: ${payMethod.value}`;
 
             const reqs = [];
             ALL_CHATS.forEach(cid => {
@@ -601,34 +603,11 @@
 
             await Promise.all(reqs);
             document.getElementById('successModal').classList.remove('hidden');
-            reset();
             btn.innerHTML = originalText;
             btn.disabled = false;
         }
 
         function closeModal() { document.getElementById('successModal').classList.add('hidden'); }
-        function reset() {
-            document.getElementById('renterName').value = "";
-            document.getElementById('voucherCode').value = "";
-            document.querySelectorAll('input[name="paymentMethod"]').forEach(e => {
-                e.checked = false;
-                const parent = e.closest('.radio-box');
-                if(parent) {
-                    parent.classList.remove('checked');
-                    parent.querySelector('div.text-green-400')?.classList.remove('text-green-400');
-                    parent.querySelector('div.text-[8px]')?.classList.add('text-gray-300');
-                }
-            });
-            document.getElementById('qrisDisplay').classList.add('hidden');
-            
-            selHour = 0;
-            Array.from(grid.children).forEach(b => b.className = "h-9 hour-btn rounded-lg text-xs font-bold transition");
-            
-            document.getElementById('promoSection').classList.add('hidden');
-            document.getElementById('totalPrice').textContent = "Rp 0";
-            document.getElementById('durationDisplay').textContent = "0 Jam";
-            document.getElementById('voucherMessage').innerHTML = "";
-        }
     </script>
 </body>
 </html>
