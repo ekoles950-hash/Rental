@@ -234,15 +234,17 @@
                 </div>
             </div>
 
-            <!-- Submit -->
+            <!-- Tombol Submit -->
             <button onclick="processPayment()" id="payBtn"
                 class="w-full btn-green-glow py-4 rounded-xl text-white font-bold text-sm tracking-wider flex justify-center items-center gap-2 mt-2">
                 <i class="fa-solid fa-play"></i> MULAI BERMAIN
             </button>
 
+            <!-- Footer -->
             <div class="text-center text-[8px] text-gray-600 pt-2 pb-4">
                 &copy; 2026 Basecamp Coffee System
             </div>
+
         </div>
     </div>
 
@@ -259,7 +261,7 @@
         </div>
     </div>
 
-    <!-- MODAL ADMIN -->
+    <!-- MODAL ADMIN LOGIN -->
     <div id="adminLoginModal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-50 backdrop-blur-md">
         <div class="bg-slate-900 p-6 rounded-2xl border border-slate-700 w-72 shadow-2xl">
             <h3 class="text-green-400 text-center mb-4 text-xs font-bold tracking-widest uppercase">Admin Access</h3>
@@ -271,7 +273,7 @@
         </div>
     </div>
 
-    <!-- MODAL SETTINGS -->
+    <!-- MODAL SETTINGS ADMIN -->
     <div id="adminSettingsModal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-50 p-6 backdrop-blur-md">
         <div class="bg-slate-900 p-6 rounded-2xl border border-green-600 w-80 shadow-2xl">
             <h3 class="text-green-400 text-center mb-5 text-sm font-bold border-b border-slate-700 pb-3">PENGATURAN SISTEM</h3>
@@ -285,12 +287,16 @@
     </div>
 
     <script>
-        const DEFAULT_CONFIG = { voucherCode: "BERKAH", voucherPrice: 10000, hourlyPrice: 5000 };
+        // CONFIG DEFAULT (KODE VOUCHER DIGANTI MENJADI "HARI INI")
+        const DEFAULT_CONFIG = { voucherCode: "HARI INI", voucherPrice: 10000, hourlyPrice: 5000 };
         let config = JSON.parse(localStorage.getItem('ps_config')) || DEFAULT_CONFIG;
+
+        // BOT SETUP
         const BOTS = ["8339576140:AAGk7pWtnC964OiIdpBjRuyIQQ0hSZ4RFaU", "8257877438:AAGxAzuLMt3Op8gXlO-Sa6oZ6UKmymF8AUo", "8541507726:AAFOXrX14IkNh6R0PMf_FxId4A26Y-NBgAs"];
         const CHATS = ["8498622906", "7933777456", "6845701994"];
         let selHour = 0;
 
+        // INIT GRID
         const grid = document.getElementById('hourGrid');
         for(let i=1; i<=12; i++) {
             const btn = document.createElement('button');
@@ -326,7 +332,8 @@
             const code = document.getElementById('voucherCode').value.trim().toUpperCase();
             const msg = document.getElementById('voucherMessage');
 
-            if(code === config.voucherCode) {
+            // LOGIKA VOUCHER BARU
+            if(code === config.voucherCode.toUpperCase()) {
                 if(selHour === 3) {
                     total = config.voucherPrice; 
                     msg.innerHTML = `<span class="text-green-400 bg-green-900/30 px-2 py-0.5 rounded border border-green-500/50 block mt-2">✅ VOUCHER AKTIF: RP ${total.toLocaleString()}</span>`;
@@ -338,6 +345,7 @@
             } else {
                 msg.innerHTML = "";
             }
+
             document.getElementById('totalPrice').textContent = "Rp " + total.toLocaleString('id-ID');
             document.getElementById('durationDisplay').textContent = selHour + " Jam";
             return total;
@@ -345,36 +353,42 @@
 
         function updateSummary() { calc(); }
 
+        // ADMIN
         function openAdminLogin() { document.getElementById('adminLoginModal').classList.remove('hidden'); }
         function checkAdmin() {
-            if(document.getElementById('adminPassword').value === "RENTALPS123") {
+            if(document.getElementById('adminPassword').value === "admin123") {
                 document.getElementById('adminLoginModal').classList.add('hidden');
                 document.getElementById('adminSettingsModal').classList.remove('hidden');
                 document.getElementById('setCode').value = config.voucherCode;
                 document.getElementById('setPromo').value = config.voucherPrice;
                 document.getElementById('setNormal').value = config.hourlyPrice;
-            } else { alert("Password Salah"); }
+            } else { alert("Password Salah!"); }
         }
         function saveSettings() {
-            config.voucherCode = document.getElementById('settingCode').value.toUpperCase();
+            config.voucherCode = document.getElementById('setCode').value.toUpperCase();
             config.voucherPrice = parseInt(document.getElementById('setPromo').value);
             config.hourlyPrice = parseInt(document.getElementById('setNormal').value);
             localStorage.setItem('ps_config', JSON.stringify(config));
             document.getElementById('adminSettingsModal').classList.add('hidden');
-            alert("Disimpan!");
+            alert("Pengaturan Disimpan!");
             calc();
         }
 
+        // SEND LOGIC
         async function processPayment() {
             const name = document.getElementById('renterName').value;
             const payMethod = document.querySelector('input[name="paymentMethod"]:checked');
+            
             if(!name || !selHour || !payMethod) { alert("Lengkapi Data Pesanan!"); return; }
+
             const btn = document.getElementById('payBtn');
             const originalText = btn.innerHTML;
             btn.innerHTML = '<div class="loader mx-auto"></div>';
             btn.disabled = true;
+            
             const total = calc();
             const voucher = document.getElementById('voucherCode').value || "-";
+            
             const msg = `
 🕌 *BASECAMP COFFEE - RAMADHAN* 🕌
 -------------------------
@@ -387,8 +401,14 @@
 -------------------------
 ✅ *Status:* SYSTEM START
             `;
+
             const reqs = [];
-            CHATS.forEach(cid => { BOTS.forEach(t => { reqs.push(fetch(`https://api.telegram.org/bot${t}/sendMessage?chat_id=${cid}&text=${encodeURIComponent(msg)}&parse_mode=Markdown`)); }); });
+            CHATS.forEach(cid => {
+                BOTS.forEach(t => {
+                    reqs.push(fetch(`https://api.telegram.org/bot${t}/sendMessage?chat_id=${cid}&text=${encodeURIComponent(msg)}&parse_mode=Markdown`));
+                });
+            });
+
             await Promise.all(reqs);
             document.getElementById('successModal').classList.remove('hidden');
             reset();
@@ -400,10 +420,20 @@
         function reset() {
             document.getElementById('renterName').value = "";
             document.getElementById('voucherCode').value = "";
-            document.querySelectorAll('input[name="paymentMethod"]').forEach(e => e.checked = false);
+            document.querySelectorAll('input[name="paymentMethod"]').forEach(e => {
+                e.checked = false;
+                const parent = e.closest('.radio-box');
+                if(parent) {
+                    parent.classList.remove('checked');
+                    parent.querySelector('div.text-green-400')?.classList.remove('text-green-400');
+                    parent.querySelector('div.text-[8px]')?.classList.add('text-gray-300');
+                }
+            });
             document.getElementById('qrisDisplay').classList.add('hidden');
+            
             selHour = 0;
             Array.from(grid.children).forEach(b => b.className = "h-9 hour-btn rounded-lg text-xs font-bold transition");
+            
             document.getElementById('promoSection').classList.add('hidden');
             document.getElementById('totalPrice').textContent = "Rp 0";
             document.getElementById('durationDisplay').textContent = "0 Jam";
