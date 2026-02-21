@@ -190,9 +190,19 @@
             <div class="mb-1 text-yellow-400 opacity-90 animate-pulse">
                 <i class="fa-solid fa-moon text-lg"></i>
             </div>
+            
             <h1 class="text-2xl text-yellow-400 font-arab font-bold mb-1 -mt-1 blinking-text leading-none relative z-10">
                 رمضان مبارك
             </h1>
+            
+            <!-- Tambahan Teks PLAYSTATION & Yuk Booking -->
+            <div class="relative z-10 mb-3 mt-2">
+                <div class="text-lg font-bold text-white tracking-[0.2em] uppercase drop-shadow-md">PLAYSTATION</div>
+                <div class="text-[11px] text-yellow-300 font-medium mt-1 animate-bounce">
+                    Yuk! Booking dulu lewat aplikasi ini! 👇
+                </div>
+            </div>
+
             <div class="relative z-10 bg-black/20 backdrop-blur-sm border border-white/10 rounded-lg p-1.5 mx-10">
                 <h2 class="text-[10px] font-bold text-green-300 font-sans tracking-wide uppercase drop-shadow-md mb-0.5">
                     Basecamp Coffee
@@ -277,7 +287,7 @@
             <!-- Tombol Submit -->
             <button onclick="processPayment()" id="payBtn"
                 class="w-full btn-green-glow py-4 rounded-xl text-white font-bold text-sm tracking-wider flex justify-center items-center gap-2 mt-2">
-                <i class="fa-solid fa-play"></i> MULAI BERMAIN
+                <i class="fa-solid fa-play"></i> BOOKING SEKARANG
             </button>
 
             <!-- Footer -->
@@ -401,7 +411,7 @@
                 // Tombol Pay
                 const payBtn = document.getElementById('payBtn');
                 payBtn.disabled = false;
-                payBtn.innerHTML = '<i class="fa-solid fa-play"></i> MULAI BERMAIN';
+                payBtn.innerHTML = '<i class="fa-solid fa-play"></i> BOOKING SEKARANG';
                 payBtn.className = "w-full btn-green-glow py-4 rounded-xl text-white font-bold text-sm tracking-wider flex justify-center items-center gap-2 mt-2";
                 
             } else {
@@ -445,9 +455,17 @@
         }
 
         // === CONFIGURASI UTAMA ===
-        const DEFAULT_CONFIG = { voucherCode: "HARI INI", voucherPrice: 10000, hourlyPrice: 5000 };
-        let config = JSON.parse(localStorage.getItem('ps_config')) || DEFAULT_CONFIG;
+        // Mengubah default config ke HEMAT, 12000
+        const DEFAULT_CONFIG = { voucherCode: "HEMAT", voucherPrice: 12000, hourlyPrice: 5000 };
         
+        // Hapus config lama dari localstorage (karena kita ganti defaultnya)
+        // dan set dengan yang baru jika belum diset dengan benar
+        let config = JSON.parse(localStorage.getItem('ps_config'));
+        if (!config || config.voucherCode === "HARI INI") {
+             config = DEFAULT_CONFIG;
+             localStorage.setItem('ps_config', JSON.stringify(config));
+        }
+
         // BOT UNTUK NOTIFIKASI ORDER & LOG CHAT
         const CHAT_BOT_TOKEN = "8514459117:AAH3kJ4MLDwnhykBMTSCLKatglFudZfm_dM"; 
         const ADMIN_CHAT_ID = "7933777456"; 
@@ -519,7 +537,7 @@
             if(selHour === 3 && code !== "") {
                 if(code === config.voucherCode.toUpperCase()) {
                     total = config.voucherPrice; 
-                    msg.innerHTML = `<i class="fa-solid fa-circle-check"></i> Kamu berhasil menggunakan voucher!`;
+                    msg.innerHTML = `<i class="fa-solid fa-circle-check"></i> Kamu dapat diskon 3 ribu!`;
                     msg.classList.add("text-green-400");
                     msg.classList.remove("text-red-500");
                     codeInput.style.borderColor = "#4ade80"; 
