@@ -80,6 +80,12 @@
             box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
             outline: none;
         }
+        .input-dark:disabled {
+            background-color: #1f2937;
+            border-color: #374151;
+            color: #6b7280;
+            cursor: not-allowed;
+        }
 
         .btn-green-glow {
             background: linear-gradient(to right, #16a34a, #15803d);
@@ -101,6 +107,10 @@
             border-color: #86efac;
             box-shadow: 0 0 10px #22c55e;
         }
+        .hour-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
 
         .radio-box {
             background: #111827;
@@ -115,6 +125,10 @@
         input:checked + .radio-box i,
         input:checked + .radio-box div {
             color: #4ade80 !important;
+        }
+        input:disabled + .radio-box {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .fade-in { animation: fadeIn 0.4s ease-out; }
@@ -210,8 +224,9 @@
             <div id="promoSection" class="hidden fade-in bg-green-900/20 p-3 rounded-xl border border-green-600/30 border-dashed">
                 <label class="text-[10px] text-green-400 font-bold ml-1 uppercase mb-1 block"><i class="fa-solid fa-ticket mr-1"></i> Kode Voucher</label>
                 <input type="text" id="voucherCode" placeholder="Masukkan Kode Promo" oninput="updateSummary()" 
-                    class="w-full bg-black/40 border border-green-600/30 rounded-lg py-2 text-center text-sm font-bold text-yellow-400 uppercase tracking-widest focus:outline-none focus:border-green-500 placeholder-gray-600">
-                <p id="voucherMessage" class="text-center text-[9px] mt-1 h-3 font-bold"></p>
+                    class="w-full bg-black/40 border border-green-600/30 rounded-lg py-2 text-center text-sm font-bold text-yellow-400 uppercase tracking-widest focus:outline-none focus:border-green-500 placeholder-gray-600 transition-colors">
+                <!-- Pesan Voucher -->
+                <p id="voucherMessage" class="text-center text-[10px] mt-2 font-bold min-h-[16px] transition-all"></p>
             </div>
 
             <!-- Metode Pembayaran -->
@@ -219,21 +234,21 @@
                 <label class="text-[10px] text-green-400 font-bold ml-1 uppercase">Metode Pembayaran</label>
                 <div class="grid grid-cols-3 gap-2 mt-1">
                     <label class="cursor-pointer relative group">
-                        <input type="radio" name="paymentMethod" value="Kotak (Atas TV)" class="peer sr-only" onchange="toggleQRIS()">
+                        <input type="radio" name="paymentMethod" value="Kotak (Atas TV)" class="peer sr-only payment-radio" onchange="toggleQRIS()">
                         <div class="radio-box p-2 rounded-xl text-center h-full flex flex-col justify-center items-center">
                             <i class="fa-solid fa-box-open text-yellow-500 text-lg mb-1 transition-colors"></i>
                             <div class="text-[8px] text-gray-300 font-bold uppercase leading-tight mt-1 transition-colors">Kotak<br>(Atas TV)</div>
                         </div>
                     </label>
                     <label class="cursor-pointer relative group">
-                        <input type="radio" name="paymentMethod" value="Kasir" class="peer sr-only" onchange="toggleQRIS()">
+                        <input type="radio" name="paymentMethod" value="Kasir" class="peer sr-only payment-radio" onchange="toggleQRIS()">
                         <div class="radio-box p-2 rounded-xl text-center h-full flex flex-col justify-center items-center">
                             <i class="fa-solid fa-cash-register text-blue-400 text-lg mb-1 transition-colors"></i>
                             <div class="text-[8px] text-gray-300 font-bold uppercase leading-tight mt-1 transition-colors">Bayar<br>di Kasir</div>
                         </div>
                     </label>
                     <label class="cursor-pointer relative group">
-                        <input type="radio" name="paymentMethod" value="QRIS" class="peer sr-only" onchange="toggleQRIS()">
+                        <input type="radio" name="paymentMethod" value="QRIS" class="peer sr-only payment-radio" onchange="toggleQRIS()">
                         <div class="radio-box p-2 rounded-xl text-center h-full flex flex-col justify-center items-center">
                             <i class="fa-solid fa-qrcode text-white text-lg mb-1 transition-colors"></i>
                             <div class="text-[8px] text-gray-300 font-bold uppercase leading-tight mt-1 transition-colors">Scan<br>QRIS</div>
@@ -278,7 +293,7 @@
         <i class="fa-brands fa-whatsapp text-3xl"></i>
         <!-- Tooltip jika sedang tutup -->
         <span id="chatClosedTooltip" class="absolute left-16 bg-gray-900 text-white text-[10px] px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition whitespace-nowrap hidden pointer-events-none">
-            Chat Offline (Buka 12:00 - 24:00)
+            Chat Offline (Buka 05:00 - 24:00)
         </span>
     </button>
 
@@ -317,7 +332,11 @@
     <!-- MODAL SUCCESS -->
     <div id="successModal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-50 p-6">
         <div class="bg-slate-900 rounded-2xl p-8 max-w-xs w-full text-center border border-green-500 shadow-2xl relative overflow-hidden">
+            <div class="w-16 h-16 bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4 border border-green-500 animate-pulse">
+                <i class="fa-solid fa-check text-3xl text-green-400"></i>
+            </div>
             <h2 class="text-xl font-bold text-white mb-2">BERHASIL!</h2>
+            <p class="text-gray-400 text-xs mb-6">Orderan terkirim. Selamat bermain!</p>
             <button onclick="closeModal()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl transition">TUTUP</button>
         </div>
     </div>
@@ -325,6 +344,7 @@
     <!-- MODAL ADMIN -->
     <div id="adminLoginModal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-50 backdrop-blur-md">
         <div class="bg-slate-900 p-6 rounded-2xl border border-slate-700 w-72 shadow-2xl">
+            <h3 class="text-green-400 text-center mb-4 text-xs font-bold tracking-widest uppercase">Admin Access</h3>
             <input type="password" id="adminPassword" class="w-full p-3 rounded-lg bg-black border border-slate-600 text-white text-sm mb-4 text-center focus:border-green-500 outline-none" placeholder="Masukkan Password">
             <div class="flex gap-2">
                 <button onclick="document.getElementById('adminLoginModal').classList.add('hidden')" class="w-1/2 bg-slate-800 text-gray-400 p-2 rounded-lg text-xs font-bold">BATAL</button>
@@ -335,72 +355,94 @@
 
     <div id="adminSettingsModal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-50 p-6 backdrop-blur-md">
         <div class="bg-slate-900 p-6 rounded-2xl border border-green-600 w-80 shadow-2xl">
+            <h3 class="text-green-400 text-center mb-5 text-sm font-bold border-b border-slate-700 pb-3">PENGATURAN SISTEM</h3>
             <div class="space-y-4">
                 <div><label class="text-[10px] text-gray-400 font-bold">KODE VOUCHER</label><input id="setCode" class="w-full p-2 bg-black border border-slate-600 rounded text-green-400 text-sm font-bold text-center uppercase focus:border-green-500 outline-none"></div>
-                <div><label class="text-[10px] text-gray-400 font-bold">HARGA PROMO</label><input id="setPromo" type="number" class="w-full p-2 bg-black border border-slate-600 rounded text-white text-sm focus:border-green-500 outline-none"></div>
-                <div><label class="text-[10px] text-gray-400 font-bold">HARGA NORMAL</label><input id="setNormal" type="number" class="w-full p-2 bg-black border border-slate-600 rounded text-white text-sm focus:border-green-500 outline-none"></div>
+                <div><label class="text-[10px] text-gray-400 font-bold">HARGA PROMO (3 JAM)</label><input id="setPromo" type="number" class="w-full p-2 bg-black border border-slate-600 rounded text-white text-sm focus:border-green-500 outline-none"></div>
+                <div><label class="text-[10px] text-gray-400 font-bold">HARGA NORMAL (/ JAM)</label><input id="setNormal" type="number" class="w-full p-2 bg-black border border-slate-600 rounded text-white text-sm focus:border-green-500 outline-none"></div>
             </div>
             <button onclick="saveSettings()" class="w-full mt-6 bg-green-600 text-white font-bold p-3 rounded-xl text-xs shadow-lg hover:bg-green-500">SIMPAN</button>
         </div>
     </div>
 
     <script>
-        // === CEK JAM BUKA CHAT ===
-        let isChatOpen = false;
+        // === CEK JAM BUKA TOKO (KESELURUHAN) ===
+        let isStoreOpen = false;
 
-        function checkChatHours() {
+        function checkStoreHours() {
             const now = new Date();
             const hour = now.getHours(); // Format 24 jam (0 - 23)
             
-            // Jam buka: 12:00 sampai 23:59 (jam 12 sampai jam 23)
-            if (hour >= 12 && hour <= 23) {
-                isChatOpen = true;
+            // Jam buka: 05:00 sampai 23:59
+            if (hour >= 5 && hour <= 23) {
+                isStoreOpen = true;
                 
-                // Ubah gaya tombol menjadi hijau (aktif)
+                // AKTIFKAN CHAT
                 const toggleBtn = document.getElementById('chatToggleBtn');
                 toggleBtn.classList.add('bg-whatsapp', 'hover-bg-whatsapp');
                 toggleBtn.classList.remove('bg-gray-disabled');
-                
-                // Sembunyikan tooltip offline
                 document.getElementById('chatClosedTooltip').classList.add('hidden');
-                
-                // Aktifkan input chat
                 document.getElementById('chatInput').disabled = false;
                 document.getElementById('sendChatBtn').disabled = false;
                 document.getElementById('chatInput').placeholder = "Ketik pesene sampeyan...";
-                
-                // Update status indikator online
                 document.getElementById('chatStatus').innerHTML = '<span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span> Online';
                 
-            } else {
-                isChatOpen = false;
+                // AKTIFKAN FORM ORDER
+                document.getElementById('renterName').disabled = false;
+                document.getElementById('voucherCode').disabled = false;
+                document.getElementById('voucherCode').placeholder = "Masukkan Kode Promo";
+                document.querySelectorAll('.payment-radio').forEach(r => r.disabled = false);
                 
-                // Ubah gaya tombol menjadi abu-abu (nonaktif)
+                // Kembalikan visual grid jam
+                Array.from(document.getElementById('hourGrid').children).forEach(b => {
+                    b.classList.remove('disabled');
+                });
+
+                // Tombol Pay
+                const payBtn = document.getElementById('payBtn');
+                payBtn.disabled = false;
+                payBtn.innerHTML = '<i class="fa-solid fa-play"></i> MULAI BERMAIN';
+                payBtn.className = "w-full btn-green-glow py-4 rounded-xl text-white font-bold text-sm tracking-wider flex justify-center items-center gap-2 mt-2";
+                
+            } else {
+                isStoreOpen = false;
+                
+                // MATIKAN CHAT
                 const toggleBtn = document.getElementById('chatToggleBtn');
                 toggleBtn.classList.remove('bg-whatsapp', 'hover-bg-whatsapp');
                 toggleBtn.classList.add('bg-gray-disabled');
-                
-                // Tampilkan tooltip offline saat di-hover
                 document.getElementById('chatClosedTooltip').classList.remove('hidden');
-                
-                // Matikan input chat
                 document.getElementById('chatInput').disabled = true;
                 document.getElementById('sendChatBtn').disabled = true;
                 document.getElementById('chatInput').placeholder = "Chat sedang Offline...";
-                
-                // Update status indikator offline
                 document.getElementById('chatStatus').innerHTML = '<span class="w-2 h-2 rounded-full bg-red-500"></span> Offline (Tutup)';
-                
-                // Tutup otomatis widget chat jika sedang terbuka
                 document.getElementById('chatWidget').classList.add('hidden');
+
+                // MATIKAN FORM ORDER
+                document.getElementById('renterName').disabled = true;
+                document.getElementById('voucherCode').disabled = true;
+                document.getElementById('voucherCode').placeholder = "Toko Sedang Tutup";
+                document.querySelectorAll('.payment-radio').forEach(r => r.disabled = true);
+                
+                // Redupkan visual grid jam
+                Array.from(document.getElementById('hourGrid').children).forEach(b => {
+                    b.classList.add('disabled');
+                    b.classList.remove('active');
+                });
+
+                // Matikan Promo Section
+                document.getElementById('promoSection').classList.add('hidden');
+                document.getElementById('voucherMessage').textContent = "";
+                selHour = 0;
+                calc();
+
+                // Tombol Pay Tutup
+                const payBtn = document.getElementById('payBtn');
+                payBtn.disabled = true;
+                payBtn.innerHTML = '<i class="fa-solid fa-lock"></i> BASECAMP TUTUP (Buka 05:00)';
+                payBtn.className = "w-full bg-gray-700 py-4 rounded-xl text-gray-400 font-bold text-sm tracking-wider flex justify-center items-center gap-2 mt-2 cursor-not-allowed border border-gray-600";
             }
         }
-
-        // Cek jam buka saat halaman dimuat
-        checkChatHours();
-        
-        // Cek setiap 1 menit berjaga-jaga perpindahan jam saat user diam di halaman
-        setInterval(checkChatHours, 60000);
 
         // === CONFIGURASI UTAMA ===
         const DEFAULT_CONFIG = { voucherCode: "HARI INI", voucherPrice: 10000, hourlyPrice: 5000 };
@@ -417,7 +459,7 @@
 
         function showToast(msg) {
             const toast = document.createElement('div');
-            toast.className = 'fixed top-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-5 py-3 rounded-xl border border-green-500 shadow-2xl z-[100] fade-in text-xs font-bold text-center';
+            toast.className = 'fixed top-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-5 py-3 rounded-xl border border-green-500 shadow-2xl z-[100] fade-in text-xs font-bold text-center z-50';
             toast.innerText = msg;
             document.body.appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
@@ -432,26 +474,65 @@
             grid.appendChild(btn);
         }
 
+        // Cek jam buka saat halaman dimuat
+        checkStoreHours();
+        // Cek berkala tiap menit
+        setInterval(checkStoreHours, 60000);
+
         function setHour(h, el) {
+            if (!isStoreOpen) {
+                showToast("Basecamp belum buka! Kami buka jam 05:00 - 24:00");
+                return;
+            }
+
             selHour = h;
             Array.from(grid.children).forEach(b => b.className = "h-9 hour-btn rounded-lg text-xs font-bold transition");
             el.className = "h-9 hour-btn active rounded-lg text-xs font-bold transition transform scale-105";
             
             const promoSec = document.getElementById('promoSection');
-            if(h === 3) promoSec.classList.remove('hidden');
-            else { promoSec.classList.add('hidden'); document.getElementById('voucherCode').value = ""; }
-            calc();
+            if(h === 3) {
+                promoSec.classList.remove('hidden');
+                calc();
+            } else { 
+                promoSec.classList.add('hidden'); 
+                document.getElementById('voucherCode').value = ""; 
+                document.getElementById('voucherMessage').innerHTML = "";
+                calc();
+            }
         }
 
         function toggleQRIS() {
-            const isQris = document.querySelector('input[name="paymentMethod"][value="QRIS"]').checked;
+            const isQris = document.querySelector('input[name="paymentMethod"][value="QRIS"]')?.checked;
             document.getElementById('qrisDisplay').className = isQris ? "block fade-in bg-white p-4 rounded-xl text-center mt-2 shadow-lg" : "hidden";
         }
 
+        // === PERBAIKAN VALIDASI VOUCHER ===
         function calc() {
             let total = selHour * config.hourlyPrice;
-            const code = document.getElementById('voucherCode').value.trim().toUpperCase();
-            if(code === config.voucherCode.toUpperCase() && selHour === 3) total = config.voucherPrice; 
+            const codeInput = document.getElementById('voucherCode');
+            const code = codeInput.value.trim().toUpperCase();
+            const msg = document.getElementById('voucherMessage');
+
+            msg.innerHTML = "";
+            msg.className = "text-center text-[10px] mt-2 font-bold min-h-[16px] transition-all";
+
+            if(selHour === 3 && code !== "") {
+                if(code === config.voucherCode.toUpperCase()) {
+                    total = config.voucherPrice; 
+                    msg.innerHTML = `<i class="fa-solid fa-circle-check"></i> Kamu berhasil menggunakan voucher!`;
+                    msg.classList.add("text-green-400");
+                    msg.classList.remove("text-red-500");
+                    codeInput.style.borderColor = "#4ade80"; 
+                } else {
+                    msg.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> Kode Voucher Salah!`;
+                    msg.classList.add("text-red-500");
+                    msg.classList.remove("text-green-400");
+                    codeInput.style.borderColor = "#ef4444"; 
+                }
+            } else {
+                codeInput.style.borderColor = "rgba(22, 163, 74, 0.3)";
+            }
+
             document.getElementById('totalPrice').textContent = "Rp " + total.toLocaleString('id-ID');
             document.getElementById('durationDisplay').textContent = selHour + " Jam";
             return total;
@@ -471,7 +552,7 @@
         }
 
         async function initTelegramChat() {
-            if (!isChatOpen) return; // Jangan init jika sedang tutup
+            if (!isStoreOpen) return; 
             
             try {
                 const res = await fetch(`https://api.telegram.org/bot${CHAT_BOT_TOKEN}/getUpdates`);
@@ -488,7 +569,7 @@
         }
 
         async function pollTelegram() {
-            if (!isChatOpen) return; // Berhenti polling jika jam chat ditutup
+            if (!isStoreOpen) return; 
             
             try {
                 const res = await fetch(`https://api.telegram.org/bot${CHAT_BOT_TOKEN}/getUpdates`);
@@ -518,12 +599,11 @@
             setTimeout(pollTelegram, 3000);
         }
 
-        // Delay sedikit sebelum init agar checkChatHours diproses lebih dulu
         setTimeout(initTelegramChat, 1000);
 
         function toggleChat() {
-            if (!isChatOpen) {
-                showToast("Chat Offline. Kami buka jam 12:00 - 24:00");
+            if (!isStoreOpen) {
+                showToast("Chat Offline. Kami buka jam 05:00 - 24:00");
                 return;
             }
             const chatWidget = document.getElementById('chatWidget');
@@ -535,7 +615,7 @@
         }
 
         async function sendChatMessage() {
-            if (!isChatOpen) return;
+            if (!isStoreOpen) return;
             
             const input = document.getElementById('chatInput');
             const text = input.value.trim();
@@ -559,7 +639,7 @@
             chatMsgs.scrollTop = chatMsgs.scrollHeight;
         }
 
-        // === FUNGSI ADMIN & SUBMIT SAMA SEPERTI SEBELUMNYA ===
+        // === FUNGSI ADMIN & SUBMIT ===
         function openAdminLogin() { document.getElementById('adminLoginModal').classList.remove('hidden'); }
         function checkAdmin() {
             if(document.getElementById('adminPassword').value === "admin123") {
@@ -581,6 +661,8 @@
         }
 
         async function processPayment() {
+            if (!isStoreOpen) return;
+
             const name = document.getElementById('renterName').value;
             const payMethod = document.querySelector('input[name="paymentMethod"]:checked');
             if(!name || !selHour || !payMethod) { showToast("Lengkapi Data Pesanan!"); return; }
