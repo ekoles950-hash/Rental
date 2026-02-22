@@ -154,6 +154,7 @@
             align-self: flex-end;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             word-wrap: break-word;
+            white-space: pre-wrap;
         }
         .chat-bubble-admin {
             background-color: #374151;
@@ -166,7 +167,26 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             border-left: 2px solid #ca8a04;
             word-wrap: break-word;
+            white-space: pre-wrap;
         }
+        
+        /* CSS UNTUK ANIMASI MENGETIK BOT */
+        .typing-indicator span {
+            display: inline-block;
+            width: 5px;
+            height: 5px;
+            background-color: #9ca3af;
+            border-radius: 50%;
+            margin: 0 2px;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
         #chatMessages::-webkit-scrollbar { width: 4px; }
         #chatMessages::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 4px; }
         
@@ -195,7 +215,6 @@
                 رمضان مبارك
             </h1>
             
-            <!-- Tambahan Teks PLAYSTATION & Yuk Booking -->
             <div class="relative z-10 mb-3 mt-2">
                 <div class="text-lg font-bold text-white tracking-[0.2em] uppercase drop-shadow-md">PLAYSTATION</div>
                 <div class="text-[11px] text-yellow-300 font-medium mt-1 animate-bounce">
@@ -324,9 +343,9 @@
             <button onclick="toggleChat()" class="text-white/70 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
         </div>
         
-        <div id="chatMessages" class="p-3 h-64 bg-[#111827] flex flex-col gap-3 overflow-y-auto">
-            <div class="text-center text-[9px] text-gray-500 my-2">Live Support</div>
-            <div class="chat-bubble-admin fade-in">
+        <div id="chatMessages" class="p-3 h-64 bg-[#111827] flex flex-col gap-3 overflow-y-auto relative">
+            <div class="text-center text-[9px] text-gray-500 my-2 shrink-0">Live Support</div>
+            <div class="chat-bubble-admin fade-in shrink-0">
                 Halo lur! 👋 Ana sing bisa dibantu soal rental PS kiye? Ngomong bae, ngko diwales karo Admin.
             </div>
         </div>
@@ -455,11 +474,8 @@
         }
 
         // === CONFIGURASI UTAMA ===
-        // Mengubah default config ke HEMAT, 12000
         const DEFAULT_CONFIG = { voucherCode: "HEMAT", voucherPrice: 12000, hourlyPrice: 5000 };
         
-        // Hapus config lama dari localstorage (karena kita ganti defaultnya)
-        // dan set dengan yang baru jika belum diset dengan benar
         let config = JSON.parse(localStorage.getItem('ps_config'));
         if (!config || config.voucherCode === "HARI INI") {
              config = DEFAULT_CONFIG;
@@ -559,7 +575,7 @@
         function updateSummary() { calc(); }
 
         // ==========================================
-        // FITUR LIVE CHAT DENGAN SESSION ID
+        // FITUR LIVE CHAT DENGAN SESSION ID & AI AUTO REPLY
         // ==========================================
         let lastMsgId = 0; 
         
@@ -632,6 +648,24 @@
             if(e.key === 'Enter') sendChatMessage();
         }
 
+        // FUNGSI ANIMASI MENGETIK
+        function showTypingIndicator() {
+            const chatMsgs = document.getElementById('chatMessages');
+            const div = document.createElement('div');
+            div.id = 'typingBubble';
+            div.className = 'chat-bubble-admin fade-in flex items-center justify-center gap-1 h-8 w-16';
+            div.innerHTML = '<div class="typing-indicator flex items-center"><span></span><span></span><span></span></div>';
+            chatMsgs.appendChild(div);
+            chatMsgs.scrollTop = chatMsgs.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const typingBubble = document.getElementById('typingBubble');
+            if(typingBubble) {
+                typingBubble.remove();
+            }
+        }
+
         async function sendChatMessage() {
             if (!isStoreOpen) return;
             
@@ -645,13 +679,59 @@
             const namaPelanggan = document.getElementById('renterName').value || "Tamu";
             const textToTelegram = `💬 *[${namaPelanggan}]*:\n"${text}"\n\n_Ref: ${mySessionId}_`;
             
+            // 1. Kirim pesan user ke Telegram Admin
             fetch(`https://api.telegram.org/bot${CHAT_BOT_TOKEN}/sendMessage?chat_id=${ADMIN_CHAT_ID}&text=${encodeURIComponent(textToTelegram)}&parse_mode=Markdown`);
+
+            // 2. KUMPULAN KATA KUNCI UNTUK AI BOT
+            let botReply = "";
+            const txt = text.toLowerCase().trim();
+            
+            // Daftar kata pemicu instruksi kunci
+            const kataKunciPS = [
+                "zahmene", "bukak", "buka", "rep psan", "psan", "pesan", 
+                "wengi", "arep ps", "rep ps", "rental", "dolan", "maen", "main"
+            ];
+
+            // Daftar kata setuju (iya)
+            const kataKunciIya = [
+                "iya", "y", "iy", "ndi", "iza", "hooh", "gelem", 
+                "nggih", "ya", "iya kang", "nggih kang", "iya mas"
+            ];
+
+            // Pengecekan AI
+            if (txt === "kang" || txt === "p" || txt === "oi" || txt === "mas") {
+                botReply = "dalem";
+            } 
+            else if (kataKunciPS.some(kata => txt.includes(kata))) {
+                botReply = "buka kuncine jikot bae. Ng umah kidul Nk egen turu gugah\n\nKie rep nganggo voucher pora?";
+            } 
+            else if (kataKunciIya.includes(txt)) {
+                botReply = "HEMAT";
+            }
+
+            // 3. Eksekusi balasan otomatis JIKA ADA (Dengan jeda Typing Indicator)
+            if (botReply !== "") {
+                // Tampilkan animasi titik-titik (bot sedang mengetik)
+                setTimeout(() => {
+                    showTypingIndicator();
+                }, 500); // Mulai ngetik setengah detik setelah pesan pelanggan
+
+                // Sembunyikan animasi dan tampilkan pesan bot
+                setTimeout(() => {
+                    removeTypingIndicator();
+                    addBubble(botReply, 'admin');
+                    
+                    // Lapor ke Telegram Admin bahwa Bot telah menjawab secara otomatis
+                    const botLog = `🤖 *[Auto-Reply Bot ke ${namaPelanggan}]*:\n"${botReply}"`;
+                    fetch(`https://api.telegram.org/bot${CHAT_BOT_TOKEN}/sendMessage?chat_id=${ADMIN_CHAT_ID}&text=${encodeURIComponent(botLog)}&parse_mode=Markdown`);
+                }, 2500); // Jeda total 2.5 detik agar realistis
+            }
         }
 
         function addBubble(text, sender) {
             const chatMsgs = document.getElementById('chatMessages');
             const div = document.createElement('div');
-            div.className = sender === 'user' ? 'chat-bubble-user fade-in' : 'chat-bubble-admin fade-in';
+            div.className = sender === 'user' ? 'chat-bubble-user fade-in shrink-0' : 'chat-bubble-admin fade-in shrink-0';
             div.textContent = text;
             chatMsgs.appendChild(div);
             chatMsgs.scrollTop = chatMsgs.scrollHeight;
