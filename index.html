@@ -703,7 +703,17 @@
                 botReply = "dalem";
             } 
             else if (kataKunciPS.some(kata => txt.includes(kata))) {
-                botReply = "buka kuncine jikot bae. Ng umah kidul Nk egen turu gugah\n\nKie rep nganggo voucher pora?";
+                // Cek waktu saat pesan diterima untuk balasan spesifik
+                const now = new Date();
+                const hour = now.getHours();
+
+                // Jika antara jam 17:00 (5 sore) sampai 20:59 (8 malam)
+                if (hour >= 17 && hour <= 20) {
+                    botReply = "Nyong orong bili egen ng masjid .kuncine jikot bae ng kidul takon mae kifa,kon jikot kunci kaya kuwe.";
+                } else {
+                    // Di luar jam buka puasa/tarawih
+                    botReply = "buka kuncine jikot bae. Ng umah kidul Nk egen turu gugah\n\nKie rep nganggo voucher pora?";
+                }
             } 
             else if (kataKunciIya.includes(txt)) {
                 botReply = "HEMAT";
