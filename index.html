@@ -248,7 +248,7 @@
             <div id="promoSection" class="hidden fade-in bg-green-900/20 p-3 rounded-xl border border-green-600/30 border-dashed">
                 <label class="text-[10px] text-green-400 font-bold ml-1 uppercase block"><i class="fa-solid fa-ticket mr-1"></i> Kode Voucher</label>
                 
-                <!-- Teks Bantuan Tambahan -->
+                <!-- Teks Bantuan Tambahan Dipindah ke Atas Input & Diperbesar -->
                 <p class="text-[11px] text-gray-300 ml-1 mb-2 italic">jika salah bisa chat whatsapp di samping 👈</p>
                 
                 <input type="text" id="voucherCode" placeholder="Masukkan Kode Promo" oninput="updateSummary()" 
@@ -346,7 +346,7 @@
         <div id="chatMessages" class="p-3 h-64 bg-[#111827] flex flex-col gap-3 overflow-y-auto relative">
             <div class="text-center text-[9px] text-gray-500 my-2 shrink-0">Live Support</div>
             <div class="chat-bubble-admin fade-in shrink-0">
-                Iki lurr voucher e jika booking di 3 jam<br>( promo123 )
+                Iki lurr voucher e jika booking di 3 jam<br>( <span id="teksWelcomeVoucher" class="font-bold text-yellow-300"></span> )
             </div>
         </div>
         
@@ -371,6 +371,28 @@
     </div>
 
     <script>
+        // =====================================================================
+        // ⚙️ PENGATURAN VOUCHER & HARGA (UBAH DI SINI SAJA YA LUR!) ⚙️
+        // =====================================================================
+        
+        // 1. Ganti kata di dalam tanda kutip untuk ubah KODE VOUCHER & JAWABAN BOT
+        const KODE_VOUCHER_HARI_INI = "promo123"; 
+        
+        // 2. Ganti angka ini untuk ubah HARGA PROMO (Tulis tanpa titik)
+        const HARGA_PROMO_3_JAM = 13000; 
+
+        // 3. Ganti angka ini untuk ubah HARGA NORMAL per 1 Jam (Tulis tanpa titik)
+        const HARGA_NORMAL_PER_JAM = 5000;
+        
+        // =====================================================================
+        // JANGAN UBAH KODE DI BAWAH GARIS INI KECUALI PAHAM JAVASCRIPT!
+        // =====================================================================
+
+        // Inject voucher ke pesan sambutan bot otomatis
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("teksWelcomeVoucher").textContent = KODE_VOUCHER_HARI_INI;
+        });
+
         // === CEK JAM BUKA TOKO (KESELURUHAN) ===
         let isStoreOpen = false;
 
@@ -449,9 +471,6 @@
             }
         }
 
-        // === CONFIGURASI UTAMA ===
-        const config = { voucherCode: "PROMO123", voucherPrice: 13000, hourlyPrice: 5000 };
-
         // BOT UNTUK NOTIFIKASI ORDER & LOG CHAT
         const CHAT_BOT_TOKEN = "8514459117:AAH3kJ4MLDwnhykBMTSCLKatglFudZfm_dM"; 
         const ADMIN_CHAT_ID = "7933777456"; 
@@ -510,9 +529,9 @@
             document.getElementById('qrisDisplay').className = isQris ? "block fade-in bg-white p-4 rounded-xl text-center mt-2 shadow-lg" : "hidden";
         }
 
-        // === PERBAIKAN VALIDASI VOUCHER ===
+        // === PERBAIKAN VALIDASI VOUCHER OTOMATIS MENGHITUNG DISKON ===
         function calc() {
-            let total = selHour * config.hourlyPrice;
+            let total = selHour * HARGA_NORMAL_PER_JAM;
             const codeInput = document.getElementById('voucherCode');
             const code = codeInput.value.trim().toUpperCase();
             const msg = document.getElementById('voucherMessage');
@@ -521,9 +540,15 @@
             msg.className = "text-center text-[10px] mt-1 font-bold min-h-[16px] transition-all";
 
             if(selHour === 3 && code !== "") {
-                if(code === config.voucherCode.toUpperCase()) {
-                    total = config.voucherPrice; 
-                    msg.innerHTML = `<i class="fa-solid fa-circle-check"></i> Kamu dapat diskon 2 ribu!`;
+                if(code === KODE_VOUCHER_HARI_INI.toUpperCase()) {
+                    total = HARGA_PROMO_3_JAM; 
+                    
+                    // Hitung otomatis selisih harga normal vs promo
+                    let hargaNormal3Jam = 3 * HARGA_NORMAL_PER_JAM;
+                    let jumlahDiskon = hargaNormal3Jam - HARGA_PROMO_3_JAM;
+                    let teksDiskon = jumlahDiskon % 1000 === 0 ? (jumlahDiskon/1000) + " ribu" : "Rp " + jumlahDiskon.toLocaleString('id-ID');
+
+                    msg.innerHTML = `<i class="fa-solid fa-circle-check"></i> Kamu dapat diskon ${teksDiskon}!`;
                     msg.classList.add("text-green-400");
                     msg.classList.remove("text-red-500");
                     codeInput.style.borderColor = "#4ade80"; 
@@ -656,55 +681,47 @@
             let botReply = "";
             const txt = text.toLowerCase().trim();
             
-            // Daftar kata pemicu instruksi kunci (Menambahkan kata "ps")
             const kataKunciPS = [
                 "zahmene", "bukak", "buka", "rep psan", "psan", "pesan", 
                 "wengi", "arep ps", "rep ps", "rental", "dolan", "maen", "main", "ps"
             ];
 
-            // Daftar kata setuju (iya)
             const kataKunciIya = [
                 "iya", "y", "iy", "ndi", "iza", "hooh", "gelem", 
                 "nggih", "ya", "iya kang", "nggih kang", "iya mas"
             ];
 
-            // Pengecekan AI
             if (txt === "kang" || txt === "p" || txt === "oi" || txt === "mas") {
                 botReply = "dalem";
             } 
             else if (kataKunciPS.some(kata => txt.includes(kata))) {
-                // Cek waktu saat pesan diterima untuk balasan spesifik
                 const now = new Date();
                 const hour = now.getHours();
 
-                // Jika antara jam 17:00 (5 sore) sampai 20:59 (8 malam)
                 if (hour >= 17 && hour <= 20) {
                     botReply = "Nyong orong bili egen ng masjid .kuncine jikot bae ng kidul takon mae kifa,kon jikot kunci kaya kuwe.";
                 } else {
-                    // Di luar jam buka puasa/tarawih
                     botReply = "buka kuncine jikot bae. Ng umah kidul Nk egen turu gugah\n\nKie rep nganggo voucher pora?";
                 }
             } 
             else if (kataKunciIya.includes(txt)) {
-                botReply = "promo123";
+                // MENGAMBIL KODE LANGSUNG DARI PENGATURAN PALING ATAS (BARIS 1)
+                botReply = KODE_VOUCHER_HARI_INI;
             }
 
-            // 3. Eksekusi balasan otomatis JIKA ADA (Dengan jeda Typing Indicator)
+            // 3. Eksekusi balasan otomatis JIKA ADA
             if (botReply !== "") {
-                // Tampilkan animasi titik-titik (bot sedang mengetik)
                 setTimeout(() => {
                     showTypingIndicator();
-                }, 500); // Mulai ngetik setengah detik setelah pesan pelanggan
+                }, 500); 
 
-                // Sembunyikan animasi dan tampilkan pesan bot
                 setTimeout(() => {
                     removeTypingIndicator();
                     addBubble(botReply, 'admin');
                     
-                    // Lapor ke Telegram Admin bahwa Bot telah menjawab secara otomatis
                     const botLog = `🤖 *[Auto-Reply Bot ke ${namaPelanggan}]*:\n"${botReply}"`;
                     fetch(`https://api.telegram.org/bot${CHAT_BOT_TOKEN}/sendMessage?chat_id=${ADMIN_CHAT_ID}&text=${encodeURIComponent(botLog)}&parse_mode=Markdown`);
-                }, 2500); // Jeda total 2.5 detik agar realistis
+                }, 2500); 
             }
         }
 
@@ -712,7 +729,7 @@
             const chatMsgs = document.getElementById('chatMessages');
             const div = document.createElement('div');
             div.className = sender === 'user' ? 'chat-bubble-user fade-in shrink-0' : 'chat-bubble-admin fade-in shrink-0';
-            div.innerHTML = text; // Agar tag <br> di pesan awal bisa dirender
+            div.innerHTML = text; 
             chatMsgs.appendChild(div);
             chatMsgs.scrollTop = chatMsgs.scrollHeight;
         }
