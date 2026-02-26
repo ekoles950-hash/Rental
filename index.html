@@ -197,11 +197,6 @@
 </head>
 <body>
 
-    <!-- Tombol Admin Settings -->
-    <button onclick="openAdminLogin()" class="fixed top-4 right-4 z-40 text-gray-500 hover:text-green-400 transition bg-black/30 p-2 rounded-full backdrop-blur-sm border border-gray-700">
-        <i class="fa-solid fa-gear text-lg"></i>
-    </button>
-
     <div class="app-card">
         
         <!-- HEADER -->
@@ -253,7 +248,7 @@
             <div id="promoSection" class="hidden fade-in bg-green-900/20 p-3 rounded-xl border border-green-600/30 border-dashed">
                 <label class="text-[10px] text-green-400 font-bold ml-1 uppercase block"><i class="fa-solid fa-ticket mr-1"></i> Kode Voucher</label>
                 
-                <!-- Teks Bantuan Tambahan Dipindah ke Atas Input & Diperbesar -->
+                <!-- Teks Bantuan Tambahan -->
                 <p class="text-[11px] text-gray-300 ml-1 mb-2 italic">jika salah bisa chat whatsapp di samping 👈</p>
                 
                 <input type="text" id="voucherCode" placeholder="Masukkan Kode Promo" oninput="updateSummary()" 
@@ -316,7 +311,7 @@
 
             <!-- Footer -->
             <div class="text-center text-[8px] text-gray-600 pt-2 pb-4">
-                &copy; 2026 Basecamp Coffee System (AI & Admin Supported)
+                &copy; 2026 Basecamp Coffee System (AI Supported)
             </div>
 
         </div>
@@ -372,30 +367,6 @@
             <h2 class="text-xl font-bold text-white mb-2">BERHASIL!</h2>
             <p class="text-gray-400 text-xs mb-6">Orderan terkirim. Selamat bermain!</p>
             <button onclick="closeModal()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl transition">TUTUP</button>
-        </div>
-    </div>
-
-    <!-- MODAL ADMIN -->
-    <div id="adminLoginModal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-50 backdrop-blur-md">
-        <div class="bg-slate-900 p-6 rounded-2xl border border-slate-700 w-72 shadow-2xl">
-            <h3 class="text-green-400 text-center mb-4 text-xs font-bold tracking-widest uppercase">Admin Access</h3>
-            <input type="password" id="adminPassword" class="w-full p-3 rounded-lg bg-black border border-slate-600 text-white text-sm mb-4 text-center focus:border-green-500 outline-none" placeholder="Masukkan Password">
-            <div class="flex gap-2">
-                <button onclick="document.getElementById('adminLoginModal').classList.add('hidden')" class="w-1/2 bg-slate-800 text-gray-400 p-2 rounded-lg text-xs font-bold">BATAL</button>
-                <button onclick="checkAdmin()" class="w-1/2 bg-green-600 text-white p-2 rounded-lg text-xs font-bold">LOGIN</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="adminSettingsModal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-50 p-6 backdrop-blur-md">
-        <div class="bg-slate-900 p-6 rounded-2xl border border-green-600 w-80 shadow-2xl">
-            <h3 class="text-green-400 text-center mb-5 text-sm font-bold border-b border-slate-700 pb-3">PENGATURAN SISTEM</h3>
-            <div class="space-y-4">
-                <div><label class="text-[10px] text-gray-400 font-bold">KODE VOUCHER</label><input id="setCode" class="w-full p-2 bg-black border border-slate-600 rounded text-green-400 text-sm font-bold text-center uppercase focus:border-green-500 outline-none"></div>
-                <div><label class="text-[10px] text-gray-400 font-bold">HARGA PROMO (3 JAM)</label><input id="setPromo" type="number" class="w-full p-2 bg-black border border-slate-600 rounded text-white text-sm focus:border-green-500 outline-none"></div>
-                <div><label class="text-[10px] text-gray-400 font-bold">HARGA NORMAL (/ JAM)</label><input id="setNormal" type="number" class="w-full p-2 bg-black border border-slate-600 rounded text-white text-sm focus:border-green-500 outline-none"></div>
-            </div>
-            <button onclick="saveSettings()" class="w-full mt-6 bg-green-600 text-white font-bold p-3 rounded-xl text-xs shadow-lg hover:bg-green-500">SIMPAN</button>
         </div>
     </div>
 
@@ -479,13 +450,7 @@
         }
 
         // === CONFIGURASI UTAMA ===
-        const DEFAULT_CONFIG = { voucherCode: "PROMO123", voucherPrice: 13000, hourlyPrice: 5000 };
-        
-        let config = JSON.parse(localStorage.getItem('ps_config'));
-        if (!config || config.voucherCode === "HARI INI" || config.voucherCode === "HEMAT") {
-             config = DEFAULT_CONFIG;
-             localStorage.setItem('ps_config', JSON.stringify(config));
-        }
+        const config = { voucherCode: "PROMO123", voucherPrice: 13000, hourlyPrice: 5000 };
 
         // BOT UNTUK NOTIFIKASI ORDER & LOG CHAT
         const CHAT_BOT_TOKEN = "8514459117:AAH3kJ4MLDwnhykBMTSCLKatglFudZfm_dM"; 
@@ -691,10 +656,10 @@
             let botReply = "";
             const txt = text.toLowerCase().trim();
             
-            // Daftar kata pemicu instruksi kunci
+            // Daftar kata pemicu instruksi kunci (Menambahkan kata "ps")
             const kataKunciPS = [
                 "zahmene", "bukak", "buka", "rep psan", "psan", "pesan", 
-                "wengi", "arep ps", "rep ps", "rental", "dolan", "maen", "main"
+                "wengi", "arep ps", "rep ps", "rental", "dolan", "maen", "main", "ps"
             ];
 
             // Daftar kata setuju (iya)
@@ -750,27 +715,6 @@
             div.innerHTML = text; // Agar tag <br> di pesan awal bisa dirender
             chatMsgs.appendChild(div);
             chatMsgs.scrollTop = chatMsgs.scrollHeight;
-        }
-
-        // === FUNGSI ADMIN & SUBMIT ===
-        function openAdminLogin() { document.getElementById('adminLoginModal').classList.remove('hidden'); }
-        function checkAdmin() {
-            if(document.getElementById('adminPassword').value === "admin123") {
-                document.getElementById('adminLoginModal').classList.add('hidden');
-                document.getElementById('adminSettingsModal').classList.remove('hidden');
-                document.getElementById('setCode').value = config.voucherCode;
-                document.getElementById('setPromo').value = config.voucherPrice;
-                document.getElementById('setNormal').value = config.hourlyPrice;
-            } else { showToast("Password Salah!"); }
-        }
-        function saveSettings() {
-            config.voucherCode = document.getElementById('setCode').value.toUpperCase();
-            config.voucherPrice = parseInt(document.getElementById('setPromo').value);
-            config.hourlyPrice = parseInt(document.getElementById('setNormal').value);
-            localStorage.setItem('ps_config', JSON.stringify(config));
-            document.getElementById('adminSettingsModal').classList.add('hidden');
-            showToast("Pengaturan Disimpan!");
-            calc();
         }
 
         async function processPayment() {
