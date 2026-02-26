@@ -251,11 +251,16 @@
 
             <!-- Voucher -->
             <div id="promoSection" class="hidden fade-in bg-green-900/20 p-3 rounded-xl border border-green-600/30 border-dashed">
-                <label class="text-[10px] text-green-400 font-bold ml-1 uppercase mb-1 block"><i class="fa-solid fa-ticket mr-1"></i> Kode Voucher</label>
+                <label class="text-[10px] text-green-400 font-bold ml-1 uppercase block"><i class="fa-solid fa-ticket mr-1"></i> Kode Voucher</label>
+                
+                <!-- Teks Bantuan Tambahan Dipindah ke Atas Input & Diperbesar -->
+                <p class="text-[11px] text-gray-300 ml-1 mb-2 italic">jika salah bisa chat whatsapp di samping 👈</p>
+                
                 <input type="text" id="voucherCode" placeholder="Masukkan Kode Promo" oninput="updateSummary()" 
                     class="w-full bg-black/40 border border-green-600/30 rounded-lg py-2 text-center text-sm font-bold text-yellow-400 uppercase tracking-widest focus:outline-none focus:border-green-500 placeholder-gray-600 transition-colors">
+                
                 <!-- Pesan Voucher -->
-                <p id="voucherMessage" class="text-center text-[10px] mt-2 font-bold min-h-[16px] transition-all"></p>
+                <p id="voucherMessage" class="text-center text-[10px] mt-1 font-bold min-h-[16px] transition-all"></p>
             </div>
 
             <!-- Metode Pembayaran -->
@@ -346,7 +351,7 @@
         <div id="chatMessages" class="p-3 h-64 bg-[#111827] flex flex-col gap-3 overflow-y-auto relative">
             <div class="text-center text-[9px] text-gray-500 my-2 shrink-0">Live Support</div>
             <div class="chat-bubble-admin fade-in shrink-0">
-             sistem chat otomatis ada yang bisa kami bantu
+                Iki lurr voucher e jika booking di 3 jam<br>( promo123 )
             </div>
         </div>
         
@@ -474,10 +479,10 @@
         }
 
         // === CONFIGURASI UTAMA ===
-        const DEFAULT_CONFIG = { voucherCode: "HEMAT", voucherPrice: 12000, hourlyPrice: 5000 };
+        const DEFAULT_CONFIG = { voucherCode: "PROMO123", voucherPrice: 13000, hourlyPrice: 5000 };
         
         let config = JSON.parse(localStorage.getItem('ps_config'));
-        if (!config || config.voucherCode === "HARI INI") {
+        if (!config || config.voucherCode === "HARI INI" || config.voucherCode === "HEMAT") {
              config = DEFAULT_CONFIG;
              localStorage.setItem('ps_config', JSON.stringify(config));
         }
@@ -548,12 +553,12 @@
             const msg = document.getElementById('voucherMessage');
 
             msg.innerHTML = "";
-            msg.className = "text-center text-[10px] mt-2 font-bold min-h-[16px] transition-all";
+            msg.className = "text-center text-[10px] mt-1 font-bold min-h-[16px] transition-all";
 
             if(selHour === 3 && code !== "") {
                 if(code === config.voucherCode.toUpperCase()) {
                     total = config.voucherPrice; 
-                    msg.innerHTML = `<i class="fa-solid fa-circle-check"></i> Kamu dapat diskon 3 ribu!`;
+                    msg.innerHTML = `<i class="fa-solid fa-circle-check"></i> Kamu dapat diskon 2 ribu!`;
                     msg.classList.add("text-green-400");
                     msg.classList.remove("text-red-500");
                     codeInput.style.borderColor = "#4ade80"; 
@@ -716,7 +721,7 @@
                 }
             } 
             else if (kataKunciIya.includes(txt)) {
-                botReply = "HEMAT";
+                botReply = "promo123";
             }
 
             // 3. Eksekusi balasan otomatis JIKA ADA (Dengan jeda Typing Indicator)
@@ -742,7 +747,7 @@
             const chatMsgs = document.getElementById('chatMessages');
             const div = document.createElement('div');
             div.className = sender === 'user' ? 'chat-bubble-user fade-in shrink-0' : 'chat-bubble-admin fade-in shrink-0';
-            div.textContent = text;
+            div.innerHTML = text; // Agar tag <br> di pesan awal bisa dirender
             chatMsgs.appendChild(div);
             chatMsgs.scrollTop = chatMsgs.scrollHeight;
         }
