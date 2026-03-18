@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Basecamp Coffee - Ramadhan</title>
+    <title>Basecamp Coffee - Idul Fitri</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -11,9 +11,10 @@
         body {
             font-family: 'Poppins', sans-serif;
             background-color: #111827;
+            /* Background Pattern Halus - Warna Hijau Ketupat & Emas */
             background-image: 
-                radial-gradient(at 0% 0%, rgba(22, 101, 52, 0.4) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(180, 83, 9, 0.2) 0px, transparent 50%);
+                radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.25) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(245, 158, 11, 0.15) 0px, transparent 50%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -34,9 +35,9 @@
             width: 100%;
             max-width: 380px;
             background-color: #1f2937;
-            border: 1px solid #166534;
+            border: 1px solid #047857; /* Border hijau emerald */
             border-radius: 24px;
-            box-shadow: 0 0 50px rgba(22, 163, 74, 0.15);
+            box-shadow: 0 0 50px rgba(16, 185, 129, 0.15);
             overflow: hidden;
             position: relative;
             display: flex;
@@ -45,11 +46,12 @@
         }
 
         .header-section {
-            background: linear-gradient(160deg, #022c22 0%, #064e3b 100%);
+            /* Gradien hijau cerah khas Idul Fitri */
+            background: linear-gradient(160deg, #064e3b 0%, #047857 100%);
             position: relative;
             padding: 15px 20px 20px 20px; 
             text-align: center;
-            border-bottom: 2px solid #ca8a04;
+            border-bottom: 2px solid #fbbf24;
             overflow: hidden;
         }
 
@@ -57,7 +59,7 @@
             position: absolute;
             top: -20px; left: -20px;
             width: 100px; height: 100px;
-            background: radial-gradient(circle, rgba(251,191,36,0.1) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(251,191,36,0.15) 0%, transparent 70%);
             border-radius: 50%;
         }
 
@@ -76,8 +78,8 @@
             transition: all 0.3s;
         }
         .input-dark:focus {
-            border-color: #22c55e;
-            box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
+            border-color: #10b981;
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
             outline: none;
         }
         .input-dark:disabled {
@@ -88,9 +90,9 @@
         }
 
         .btn-green-glow {
-            background: linear-gradient(to right, #16a34a, #15803d);
-            border: 1px solid #22c55e;
-            box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+            background: linear-gradient(to right, #10b981, #059669);
+            border: 1px solid #34d399;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
             transition: transform 0.2s;
         }
         .btn-green-glow:active { transform: scale(0.98); }
@@ -101,11 +103,11 @@
             color: #d1d5db;
         }
         .hour-btn.active {
-            background: #22c55e;
-            color: black;
+            background: #10b981;
+            color: white;
             font-weight: bold;
-            border-color: #86efac;
-            box-shadow: 0 0 10px #22c55e;
+            border-color: #6ee7b7;
+            box-shadow: 0 0 10px #10b981;
         }
         .hour-btn.disabled {
             opacity: 0.5;
@@ -118,13 +120,13 @@
             transition: all 0.2s;
         }
         input:checked + .radio-box {
-            background: rgba(34, 197, 94, 0.15);
-            border-color: #22c55e;
-            box-shadow: 0 0 10px rgba(34, 197, 94, 0.2);
+            background: rgba(16, 185, 129, 0.15);
+            border-color: #10b981;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
         }
         input:checked + .radio-box i,
         input:checked + .radio-box div {
-            color: #4ade80 !important;
+            color: #34d399 !important;
         }
         input:disabled + .radio-box {
             opacity: 0.5;
@@ -145,7 +147,7 @@
 
         /* CHAT SYSTEM CSS */
         .chat-bubble-user {
-            background-color: #166534;
+            background-color: #047857;
             color: white;
             border-radius: 12px 12px 0 12px;
             padding: 8px 12px;
@@ -165,7 +167,7 @@
             max-width: 80%;
             align-self: flex-start;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            border-left: 2px solid #ca8a04;
+            border-left: 2px solid #fbbf24;
             word-wrap: break-word;
             white-space: pre-wrap;
         }
@@ -197,32 +199,57 @@
 </head>
 <body>
 
+    <script>
+        // =====================================================================
+        // ⚙️ PENGATURAN VOUCHER, HARGA & AUDIO (UBAH DI SINI SAJA YA LUR!) ⚙️
+        // =====================================================================
+        
+        // 1. KODE VOUCHER & JAWABAN BOT
+        const KODE_VOUCHER_HARI_INI = "promo123"; 
+        
+        // 2. HARGA PROMO (Tulis tanpa titik)
+        const HARGA_PROMO_3_JAM = 13000; 
+
+        // 3. HARGA NORMAL per 1 Jam (Tulis tanpa titik)
+        const HARGA_NORMAL_PER_JAM = 5000;
+
+        // 4. NAMA FILE MP3 TAKBIRAN DI GITHUB ANDA
+        // Pastikan Anda upload file mp3 dengan nama persis seperti di bawah ini ke Github!
+        const LINK_MP3_TAKBIRAN = "takbiran.mp3"; 
+        
+        // =====================================================================
+        // JANGAN UBAH KODE DI BAWAH GARIS INI KECUALI PAHAM JAVASCRIPT!
+        // =====================================================================
+    </script>
+
     <div class="app-card">
         
-        <!-- HEADER -->
+        <!-- HEADER TEMA IDUL FITRI -->
         <div class="header-section">
             <div class="header-ornament"></div>
             <div class="mb-1 text-yellow-400 opacity-90 animate-pulse">
-                <i class="fa-solid fa-moon text-lg"></i>
+                <!-- Ikon Masjid -->
+                <i class="fa-solid fa-mosque text-xl"></i>
             </div>
             
-            <h1 class="text-2xl text-yellow-400 font-arab font-bold mb-1 -mt-1 blinking-text leading-none relative z-10">
-                رمضان مبارك
+            <!-- Teks Eid Mubarak -->
+            <h1 class="text-2xl text-yellow-400 font-arab font-bold mb-1 mt-1 blinking-text leading-none relative z-10">
+                عيد مبارك
             </h1>
             
-            <div class="relative z-10 mb-3 mt-2">
+            <div class="relative z-10 mb-3 mt-3">
                 <div class="text-lg font-bold text-white tracking-[0.2em] uppercase drop-shadow-md">PLAYSTATION</div>
                 <div class="text-[11px] text-yellow-300 font-medium mt-1 animate-bounce">
                     Yuk! Booking dulu lewat aplikasi ini! 👇
                 </div>
             </div>
 
-            <div class="relative z-10 bg-black/20 backdrop-blur-sm border border-white/10 rounded-lg p-1.5 mx-10">
-                <h2 class="text-[10px] font-bold text-green-300 font-sans tracking-wide uppercase drop-shadow-md mb-0.5">
+            <div class="relative z-10 bg-black/20 backdrop-blur-sm border border-white/10 rounded-lg p-2 mx-6">
+                <h2 class="text-[11px] font-bold text-emerald-300 font-sans tracking-wide uppercase drop-shadow-md mb-1">
                     Basecamp Coffee
                 </h2>
-                <p class="text-[6px] text-gray-300 font-light italic leading-tight">
-                    Mengucapkan Selamat Menunaikan<br>Ibadah Puasa 1447 H
+                <p class="text-[7px] text-gray-200 font-light italic leading-tight">
+                    Mengucapkan Selamat Hari Raya<br>Idul Fitri 1447 H<br><span class="font-semibold text-yellow-200">Mohon Maaf Lahir & Batin</span>
                 </p>
             </div>
         </div>
@@ -231,28 +258,28 @@
             
             <!-- Nama -->
             <div>
-                <label class="text-[10px] text-green-400 font-bold ml-1 uppercase">Nama Pelanggan</label>
+                <label class="text-[10px] text-emerald-400 font-bold ml-1 uppercase">Nama Pelanggan</label>
                 <div class="relative mt-1">
-                    <span class="absolute left-3 top-2.5 text-green-600"><i class="fa-solid fa-user"></i></span>
+                    <span class="absolute left-3 top-2.5 text-emerald-600"><i class="fa-solid fa-user"></i></span>
                     <input type="text" id="renterName" class="w-full input-dark rounded-xl py-2.5 pl-9 pr-4 text-sm" placeholder="Masukkan nama...">
                 </div>
             </div>
 
             <!-- Durasi -->
             <div>
-                <label class="text-[10px] text-green-400 font-bold ml-1 uppercase">Pilih Durasi (Jam)</label>
+                <label class="text-[10px] text-emerald-400 font-bold ml-1 uppercase">Pilih Durasi (Jam)</label>
                 <div class="grid grid-cols-6 gap-2 mt-1" id="hourGrid"></div>
             </div>
 
             <!-- Voucher -->
-            <div id="promoSection" class="hidden fade-in bg-green-900/20 p-3 rounded-xl border border-green-600/30 border-dashed">
-                <label class="text-[10px] text-green-400 font-bold ml-1 uppercase block"><i class="fa-solid fa-ticket mr-1"></i> Kode Voucher</label>
+            <div id="promoSection" class="hidden fade-in bg-emerald-900/20 p-3 rounded-xl border border-emerald-600/30 border-dashed">
+                <label class="text-[10px] text-emerald-400 font-bold ml-1 uppercase block"><i class="fa-solid fa-ticket mr-1"></i> Kode Voucher</label>
                 
                 <!-- Teks Bantuan Tambahan Dipindah ke Atas Input & Diperbesar -->
                 <p class="text-[11px] text-gray-300 ml-1 mb-2 italic">jika salah bisa chat whatsapp di samping 👈</p>
                 
                 <input type="text" id="voucherCode" placeholder="Masukkan Kode Promo" oninput="updateSummary()" 
-                    class="w-full bg-black/40 border border-green-600/30 rounded-lg py-2 text-center text-sm font-bold text-yellow-400 uppercase tracking-widest focus:outline-none focus:border-green-500 placeholder-gray-600 transition-colors">
+                    class="w-full bg-black/40 border border-emerald-600/30 rounded-lg py-2 text-center text-sm font-bold text-yellow-400 uppercase tracking-widest focus:outline-none focus:border-emerald-500 placeholder-gray-600 transition-colors">
                 
                 <!-- Pesan Voucher -->
                 <p id="voucherMessage" class="text-center text-[10px] mt-1 font-bold min-h-[16px] transition-all"></p>
@@ -260,7 +287,7 @@
 
             <!-- Metode Pembayaran -->
             <div>
-                <label class="text-[10px] text-green-400 font-bold ml-1 uppercase">Metode Pembayaran</label>
+                <label class="text-[10px] text-emerald-400 font-bold ml-1 uppercase">Metode Pembayaran</label>
                 <div class="grid grid-cols-3 gap-2 mt-1">
                     <label class="cursor-pointer relative group">
                         <input type="radio" name="paymentMethod" value="Kotak (Atas TV)" class="peer sr-only payment-radio" onchange="toggleQRIS()">
@@ -293,13 +320,13 @@
             </div>
 
             <!-- Total -->
-            <div class="bg-black/60 backdrop-blur-md rounded-xl p-4 border-l-4 border-green-500 flex justify-between items-center mt-2">
+            <div class="bg-black/60 backdrop-blur-md rounded-xl p-4 border-l-4 border-emerald-500 flex justify-between items-center mt-2">
                 <div>
                     <p class="text-[9px] text-gray-400 uppercase tracking-wide">Total Pembayaran</p>
                     <p class="text-white font-bold text-xl drop-shadow-sm" id="totalPrice">Rp 0</p>
                 </div>
                 <div class="text-right">
-                    <span class="bg-green-800 text-green-200 text-xs px-2 py-1 rounded font-bold uppercase" id="durationDisplay">0 Jam</span>
+                    <span class="bg-emerald-800 text-emerald-200 text-xs px-2 py-1 rounded font-bold uppercase" id="durationDisplay">0 Jam</span>
                 </div>
             </div>
 
@@ -328,15 +355,15 @@
 
     <!-- KOTAK CHAT IN-APP -->
     <div id="chatWidget" class="hidden fixed bottom-24 left-6 w-72 sm:w-80 bg-gray-900 border border-gray-700 rounded-2xl shadow-2xl z-50 flex flex-col overflow-hidden fade-in">
-        <div class="bg-gradient-to-r from-green-700 to-green-900 p-3 flex justify-between items-center">
+        <div class="bg-gradient-to-r from-emerald-700 to-emerald-900 p-3 flex justify-between items-center">
             <div class="flex items-center gap-2">
-                <div class="w-8 h-8 bg-black/30 rounded-full flex items-center justify-center border border-green-400">
-                    <i class="fa-brands fa-whatsapp text-green-200 text-lg"></i>
+                <div class="w-8 h-8 bg-black/30 rounded-full flex items-center justify-center border border-emerald-400">
+                    <i class="fa-brands fa-whatsapp text-emerald-200 text-lg"></i>
                 </div>
                 <div>
                     <h3 class="text-white text-xs font-bold leading-tight">Live Chat Basecamp</h3>
-                    <p id="chatStatus" class="text-[9px] text-green-200 flex items-center gap-1">
-                        <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span> Online
+                    <p id="chatStatus" class="text-[9px] text-emerald-200 flex items-center gap-1">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Online
                     </p>
                 </div>
             </div>
@@ -351,7 +378,7 @@
         </div>
         
         <div class="p-2 bg-gray-800 border-t border-gray-700 flex gap-2 items-center">
-            <input type="text" id="chatInput" onkeypress="handleChatEnter(event)" placeholder="Ketik pesene sampeyan..." class="flex-1 min-w-0 bg-gray-900 text-white text-xs rounded-xl py-2 px-3 border border-gray-600 focus:border-green-500 focus:outline-none">
+            <input type="text" id="chatInput" onkeypress="handleChatEnter(event)" placeholder="Ketik pesene sampeyan..." class="flex-1 min-w-0 bg-gray-900 text-white text-xs rounded-xl py-2 px-3 border border-gray-600 focus:border-emerald-500 focus:outline-none">
             <button id="sendChatBtn" onclick="sendChatMessage()" class="shrink-0 w-9 h-9 flex items-center justify-center bg-whatsapp hover-bg-whatsapp text-white rounded-xl transition">
                 <i class="fa-solid fa-paper-plane text-xs"></i>
             </button>
@@ -360,33 +387,32 @@
 
     <!-- MODAL SUCCESS -->
     <div id="successModal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-50 p-6">
-        <div class="bg-slate-900 rounded-2xl p-8 max-w-xs w-full text-center border border-green-500 shadow-2xl relative overflow-hidden">
-            <div class="w-16 h-16 bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4 border border-green-500 animate-pulse">
-                <i class="fa-solid fa-check text-3xl text-green-400"></i>
+        <div class="bg-slate-900 rounded-2xl p-8 max-w-xs w-full text-center border border-emerald-500 shadow-2xl relative overflow-hidden">
+            <div class="w-16 h-16 bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-500 animate-pulse">
+                <i class="fa-solid fa-check text-3xl text-emerald-400"></i>
             </div>
             <h2 class="text-xl font-bold text-white mb-2">BERHASIL!</h2>
             <p class="text-gray-400 text-xs mb-6">Orderan terkirim. Selamat bermain!</p>
-            <button onclick="closeModal()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl transition">TUTUP</button>
+            <button onclick="closeModal()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl transition">TUTUP</button>
         </div>
     </div>
 
     <script>
-        // =====================================================================
-        // ⚙️ PENGATURAN VOUCHER & HARGA (UBAH DI SINI SAJA YA LUR!) ⚙️
-        // =====================================================================
-        
-        // 1. Ganti kata di dalam tanda kutip untuk ubah KODE VOUCHER & JAWABAN BOT
-        const KODE_VOUCHER_HARI_INI = "takon mboke"; 
-        
-        // 2. Ganti angka ini untuk ubah HARGA PROMO (Tulis tanpa titik)
-        const HARGA_PROMO_3_JAM = 13000; 
+        // === INISIALISASI AUDIO TAKBIRAN ===
+        let audioTakbir = new Audio(LINK_MP3_TAKBIRAN);
+        audioTakbir.loop = true; // Agar audio berulang terus selama belum booking
+        let isAudioPlaying = false;
 
-        // 3. Ganti angka ini untuk ubah HARGA NORMAL per 1 Jam (Tulis tanpa titik)
-        const HARGA_NORMAL_PER_JAM = 5000;
-        
-        // =====================================================================
-        // JANGAN UBAH KODE DI BAWAH GARIS INI KECUALI PAHAM JAVASCRIPT!
-        // =====================================================================
+        // Pemicu: Saat pelanggan mulai mengetik nama
+        document.getElementById('renterName').addEventListener('input', function() {
+            if (!isAudioPlaying && this.value.trim().length > 0) {
+                audioTakbir.play().then(() => {
+                    isAudioPlaying = true;
+                }).catch(err => {
+                    console.log("Autoplay dicegah browser, harus diklik dulu:", err);
+                });
+            }
+        });
 
         // Inject voucher ke pesan sambutan bot otomatis
         document.addEventListener("DOMContentLoaded", () => {
@@ -404,7 +430,6 @@
             if (hour >= 5 && hour <= 23) {
                 isStoreOpen = true;
                 
-                // AKTIFKAN CHAT
                 const toggleBtn = document.getElementById('chatToggleBtn');
                 toggleBtn.classList.add('bg-whatsapp', 'hover-bg-whatsapp');
                 toggleBtn.classList.remove('bg-gray-disabled');
@@ -412,20 +437,17 @@
                 document.getElementById('chatInput').disabled = false;
                 document.getElementById('sendChatBtn').disabled = false;
                 document.getElementById('chatInput').placeholder = "Ketik pesene sampeyan...";
-                document.getElementById('chatStatus').innerHTML = '<span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span> Online';
+                document.getElementById('chatStatus').innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Online';
                 
-                // AKTIFKAN FORM ORDER
                 document.getElementById('renterName').disabled = false;
                 document.getElementById('voucherCode').disabled = false;
                 document.getElementById('voucherCode').placeholder = "Masukkan Kode Promo";
                 document.querySelectorAll('.payment-radio').forEach(r => r.disabled = false);
                 
-                // Kembalikan visual grid jam
                 Array.from(document.getElementById('hourGrid').children).forEach(b => {
                     b.classList.remove('disabled');
                 });
 
-                // Tombol Pay
                 const payBtn = document.getElementById('payBtn');
                 payBtn.disabled = false;
                 payBtn.innerHTML = '<i class="fa-solid fa-play"></i> BOOKING SEKARANG';
@@ -434,7 +456,6 @@
             } else {
                 isStoreOpen = false;
                 
-                // MATIKAN CHAT
                 const toggleBtn = document.getElementById('chatToggleBtn');
                 toggleBtn.classList.remove('bg-whatsapp', 'hover-bg-whatsapp');
                 toggleBtn.classList.add('bg-gray-disabled');
@@ -445,25 +466,21 @@
                 document.getElementById('chatStatus').innerHTML = '<span class="w-2 h-2 rounded-full bg-red-500"></span> Offline (Tutup)';
                 document.getElementById('chatWidget').classList.add('hidden');
 
-                // MATIKAN FORM ORDER
                 document.getElementById('renterName').disabled = true;
                 document.getElementById('voucherCode').disabled = true;
                 document.getElementById('voucherCode').placeholder = "Toko Sedang Tutup";
                 document.querySelectorAll('.payment-radio').forEach(r => r.disabled = true);
                 
-                // Redupkan visual grid jam
                 Array.from(document.getElementById('hourGrid').children).forEach(b => {
                     b.classList.add('disabled');
                     b.classList.remove('active');
                 });
 
-                // Matikan Promo Section
                 document.getElementById('promoSection').classList.add('hidden');
                 document.getElementById('voucherMessage').textContent = "";
                 selHour = 0;
                 calc();
 
-                // Tombol Pay Tutup
                 const payBtn = document.getElementById('payBtn');
                 payBtn.disabled = true;
                 payBtn.innerHTML = '<i class="fa-solid fa-lock"></i> BASECAMP TUTUP (Buka 05:00)';
@@ -482,7 +499,7 @@
 
         function showToast(msg) {
             const toast = document.createElement('div');
-            toast.className = 'fixed top-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-5 py-3 rounded-xl border border-green-500 shadow-2xl z-[100] fade-in text-xs font-bold text-center z-50';
+            toast.className = 'fixed top-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-5 py-3 rounded-xl border border-emerald-500 shadow-2xl z-[100] fade-in text-xs font-bold text-center z-50';
             toast.innerText = msg;
             document.body.appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
@@ -497,9 +514,7 @@
             grid.appendChild(btn);
         }
 
-        // Cek jam buka saat halaman dimuat
         checkStoreHours();
-        // Cek berkala tiap menit
         setInterval(checkStoreHours, 60000);
 
         function setHour(h, el) {
@@ -543,23 +558,22 @@
                 if(code === KODE_VOUCHER_HARI_INI.toUpperCase()) {
                     total = HARGA_PROMO_3_JAM; 
                     
-                    // Hitung otomatis selisih harga normal vs promo
                     let hargaNormal3Jam = 3 * HARGA_NORMAL_PER_JAM;
                     let jumlahDiskon = hargaNormal3Jam - HARGA_PROMO_3_JAM;
                     let teksDiskon = jumlahDiskon % 1000 === 0 ? (jumlahDiskon/1000) + " ribu" : "Rp " + jumlahDiskon.toLocaleString('id-ID');
 
                     msg.innerHTML = `<i class="fa-solid fa-circle-check"></i> Kamu dapat diskon ${teksDiskon}!`;
-                    msg.classList.add("text-green-400");
+                    msg.classList.add("text-emerald-400");
                     msg.classList.remove("text-red-500");
-                    codeInput.style.borderColor = "#4ade80"; 
+                    codeInput.style.borderColor = "#34d399"; 
                 } else {
                     msg.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> Kode Voucher Salah!`;
                     msg.classList.add("text-red-500");
-                    msg.classList.remove("text-green-400");
+                    msg.classList.remove("text-emerald-400");
                     codeInput.style.borderColor = "#ef4444"; 
                 }
             } else {
-                codeInput.style.borderColor = "rgba(22, 163, 74, 0.3)";
+                codeInput.style.borderColor = "rgba(16, 185, 129, 0.3)";
             }
 
             document.getElementById('totalPrice').textContent = "Rp " + total.toLocaleString('id-ID');
@@ -643,7 +657,6 @@
             if(e.key === 'Enter') sendChatMessage();
         }
 
-        // FUNGSI ANIMASI MENGETIK
         function showTypingIndicator() {
             const chatMsgs = document.getElementById('chatMessages');
             const div = document.createElement('div');
@@ -674,10 +687,8 @@
             const namaPelanggan = document.getElementById('renterName').value || "Tamu";
             const textToTelegram = `💬 *[${namaPelanggan}]*:\n"${text}"\n\n_Ref: ${mySessionId}_`;
             
-            // 1. Kirim pesan user ke Telegram Admin
             fetch(`https://api.telegram.org/bot${CHAT_BOT_TOKEN}/sendMessage?chat_id=${ADMIN_CHAT_ID}&text=${encodeURIComponent(textToTelegram)}&parse_mode=Markdown`);
 
-            // 2. KUMPULAN KATA KUNCI UNTUK AI BOT
             let botReply = "";
             const txt = text.toLowerCase().trim();
             
@@ -705,11 +716,10 @@
                 }
             } 
             else if (kataKunciIya.includes(txt)) {
-                // MENGAMBIL KODE LANGSUNG DARI PENGATURAN PALING ATAS (BARIS 1)
+                // MENGAMBIL KODE LANGSUNG DARI PENGATURAN PALING ATAS
                 botReply = KODE_VOUCHER_HARI_INI;
             }
 
-            // 3. Eksekusi balasan otomatis JIKA ADA
             if (botReply !== "") {
                 setTimeout(() => {
                     showTypingIndicator();
@@ -741,6 +751,13 @@
             const payMethod = document.querySelector('input[name="paymentMethod"]:checked');
             if(!name || !selHour || !payMethod) { showToast("Lengkapi Data Pesanan!"); return; }
 
+            // MATIKAN AUDIO SAAT TOMBOL BOOKING DIKLIK
+            if(isAudioPlaying) {
+                audioTakbir.pause();
+                audioTakbir.currentTime = 0; // Kembalikan lagu ke awal
+                isAudioPlaying = false; 
+            }
+
             const btn = document.getElementById('payBtn');
             const originalText = btn.innerHTML;
             btn.innerHTML = '<div class="loader mx-auto"></div>';
@@ -748,7 +765,8 @@
             
             const total = calc();
             const voucher = document.getElementById('voucherCode').value || "-";
-            const msg = `🕌 *ORDER MASUK*\n👤 Nama: ${name}\n⏰ Durasi: ${selHour} Jam\n💰 Total: Rp ${total.toLocaleString('id-ID')}\n📦 Via: ${payMethod.value}`;
+            // PESAN ORDER MASUK TEMA IDUL FITRI
+            const msg = `🕌 *ORDER MASUK (IDUL FITRI)*\n👤 Nama: ${name}\n⏰ Durasi: ${selHour} Jam\n💰 Total: Rp ${total.toLocaleString('id-ID')}\n📦 Via: ${payMethod.value}`;
 
             const reqs = [];
             ALL_CHATS.forEach(cid => {
