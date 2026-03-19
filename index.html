@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -205,53 +205,54 @@
         // =====================================================================
         
         // --- 1. PENGATURAN HARGA NORMAL HARI BIASA ---
-        const VOUCHER_NORMAL = "lahirbatin"; 
+        const VOUCHER_NORMAL = "LAHIRBATIN"; 
         const HARGA_PROMO_NORMAL_3_JAM = 13000; 
         const HARGA_NORMAL_PER_JAM_ASLI = 5000;
 
         // --- 2. PENGATURAN KHUSUS MALAM TAKBIRAN ---
         const VOUCHER_TAKBIRAN = "LAHIRBATIN";
-        const HARGA_PROMO_TAKBIRAN_3_JAM = 0; // Rp 0
-        const HARGA_TAKBIRAN_PER_JAM = 0; // Rp 0
 
         // --- 3. LINK AUDIO MP3 DI GITHUB ---
         const LINK_MP3_TAKBIRAN = "takbiran.mp3"; 
 
-        // VARIABEL AKTIF (Sistem yang akan merubah otomatis, jangan diganti)
-        let KODE_VOUCHER_HARI_INI = VOUCHER_NORMAL;
-        let HARGA_PROMO_3_JAM = HARGA_PROMO_NORMAL_3_JAM;
-        let HARGA_NORMAL_PER_JAM = HARGA_NORMAL_PER_JAM_ASLI;
+        // =====================================================================
+        // JANGAN UBAH KODE DI BAWAH GARIS INI KECUALI PAHAM JAVASCRIPT!
+        // =====================================================================
 
-        // FUNGSI CEK OTOMATIS: Apakah sekarang malam takbiran?
+        // Variabel penampung status (Berubah otomatis ikuti jam)
+        let isTakbiran = false;
+        let KODE_VOUCHER_HARI_INI = VOUCHER_NORMAL;
+
         function cekPromoOtomatis() {
             const now = new Date();
             
             // Aturan Waktu: 20 Maret jam 18:00 sampai 21 Maret jam 05:00
-            // Note: Dalam Javascript, bulan dimulai dari 0 (Jan=0, Feb=1, Mar=2)
+            // Note: Bulan dalam kode dimulai dari 0 (Maret = 2)
             const takbiranStart = new Date(now.getFullYear(), 2, 20, 18, 0, 0); 
             const takbiranEnd = new Date(now.getFullYear(), 2, 21, 5, 0, 0);
 
+            // Ganti ini ke `true` secara manual jika Anda ingin memaksa menguji fitur takbiran sekarang.
+            // isTakbiran = true; 
+            
             if (now >= takbiranStart && now <= takbiranEnd) {
-                // JIKA MASUK WAKTU TAKBIRAN
+                isTakbiran = true;
                 KODE_VOUCHER_HARI_INI = VOUCHER_TAKBIRAN;
-                HARGA_PROMO_3_JAM = HARGA_PROMO_TAKBIRAN_3_JAM;
-                HARGA_NORMAL_PER_JAM = HARGA_TAKBIRAN_PER_JAM;
             } else {
-                // JIKA WAKTU NORMAL / SUDAH LEWAT
+                isTakbiran = false;
                 KODE_VOUCHER_HARI_INI = VOUCHER_NORMAL;
-                HARGA_PROMO_3_JAM = HARGA_PROMO_NORMAL_3_JAM;
-                HARGA_NORMAL_PER_JAM = HARGA_NORMAL_PER_JAM_ASLI;
             }
 
-            // Update nama voucher di layar selamat datang chat AI
-            const welcomeText = document.getElementById("teksWelcomeVoucher");
-            if (welcomeText) welcomeText.textContent = KODE_VOUCHER_HARI_INI;
+            // Ganti teks sambutan di Chat Bot secara dinamis
+            const welcomeMsgBox = document.getElementById("welcomeMsgBox");
+            if (welcomeMsgBox) {
+                if (isTakbiran) {
+                    welcomeMsgBox.innerHTML = `Spesial malam takbiran, main jam pira bae GRATIS! Pake voucher kiye:<br>( <span class="font-bold text-yellow-300">${KODE_VOUCHER_HARI_INI}</span> )`;
+                } else {
+                    welcomeMsgBox.innerHTML = `Iki lurr voucher e jika booking di 3 jam<br>( <span class="font-bold text-yellow-300">${KODE_VOUCHER_HARI_INI}</span> )`;
+                }
+            }
         }
 
-        // Jalankan cek promo saat web dibuka
-        cekPromoOtomatis();
-
-        // =====================================================================
     </script>
 
     <div class="app-card">
@@ -307,7 +308,7 @@
             <div id="promoSection" class="hidden fade-in bg-emerald-900/20 p-3 rounded-xl border border-emerald-600/30 border-dashed">
                 <label class="text-[10px] text-emerald-400 font-bold ml-1 uppercase block"><i class="fa-solid fa-ticket mr-1"></i> Kode Voucher</label>
                 
-                <!-- Teks Bantuan -->
+                <!-- Teks Bantuan Tambahan Dipindah ke Atas Input & Diperbesar -->
                 <p class="text-[11px] text-gray-300 ml-1 mb-2 italic">jika salah bisa chat whatsapp di samping 👈</p>
                 
                 <input type="text" id="voucherCode" placeholder="Masukkan Kode Promo" oninput="updateSummary()" 
@@ -404,8 +405,8 @@
         
         <div id="chatMessages" class="p-3 h-64 bg-[#111827] flex flex-col gap-3 overflow-y-auto relative">
             <div class="text-center text-[9px] text-gray-500 my-2 shrink-0">Live Support</div>
-            <div class="chat-bubble-admin fade-in shrink-0">
-                Iki lurr voucher e jika booking di 3 jam<br>( <span id="teksWelcomeVoucher" class="font-bold text-yellow-300"></span> )
+            <div id="welcomeMsgBox" class="chat-bubble-admin fade-in shrink-0">
+                <!-- Teks akan diisi otomatis oleh Javascript -->
             </div>
         </div>
         
@@ -450,7 +451,7 @@
         let isStoreOpen = false;
 
         function checkStoreHours() {
-            // Panggil cek harga dan kode otomatis (Takbiran atau Bukan)
+            // Panggil cek promo takbiran otomatis
             cekPromoOtomatis();
 
             const now = new Date();
@@ -460,7 +461,6 @@
             if (hour >= 5 && hour <= 23) {
                 isStoreOpen = true;
                 
-                // AKTIFKAN CHAT
                 const toggleBtn = document.getElementById('chatToggleBtn');
                 toggleBtn.classList.add('bg-whatsapp', 'hover-bg-whatsapp');
                 toggleBtn.classList.remove('bg-gray-disabled');
@@ -470,18 +470,15 @@
                 document.getElementById('chatInput').placeholder = "Ketik pesene sampeyan...";
                 document.getElementById('chatStatus').innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Online';
                 
-                // AKTIFKAN FORM ORDER
                 document.getElementById('renterName').disabled = false;
                 document.getElementById('voucherCode').disabled = false;
                 document.getElementById('voucherCode').placeholder = "Masukkan Kode Promo";
                 document.querySelectorAll('.payment-radio').forEach(r => r.disabled = false);
                 
-                // Kembalikan visual grid jam
                 Array.from(document.getElementById('hourGrid').children).forEach(b => {
                     b.classList.remove('disabled');
                 });
 
-                // Tombol Pay
                 const payBtn = document.getElementById('payBtn');
                 payBtn.disabled = false;
                 payBtn.innerHTML = '<i class="fa-solid fa-play"></i> BOOKING SEKARANG';
@@ -490,7 +487,6 @@
             } else {
                 isStoreOpen = false;
                 
-                // MATIKAN CHAT
                 const toggleBtn = document.getElementById('chatToggleBtn');
                 toggleBtn.classList.remove('bg-whatsapp', 'hover-bg-whatsapp');
                 toggleBtn.classList.add('bg-gray-disabled');
@@ -501,25 +497,21 @@
                 document.getElementById('chatStatus').innerHTML = '<span class="w-2 h-2 rounded-full bg-red-500"></span> Offline (Tutup)';
                 document.getElementById('chatWidget').classList.add('hidden');
 
-                // MATIKAN FORM ORDER
                 document.getElementById('renterName').disabled = true;
                 document.getElementById('voucherCode').disabled = true;
                 document.getElementById('voucherCode').placeholder = "Toko Sedang Tutup";
                 document.querySelectorAll('.payment-radio').forEach(r => r.disabled = true);
                 
-                // Redupkan visual grid jam
                 Array.from(document.getElementById('hourGrid').children).forEach(b => {
                     b.classList.add('disabled');
                     b.classList.remove('active');
                 });
 
-                // Matikan Promo Section
                 document.getElementById('promoSection').classList.add('hidden');
                 document.getElementById('voucherMessage').textContent = "";
                 selHour = 0;
                 calc();
 
-                // Tombol Pay Tutup
                 const payBtn = document.getElementById('payBtn');
                 payBtn.disabled = true;
                 payBtn.innerHTML = '<i class="fa-solid fa-lock"></i> BASECAMP TUTUP (Buka 05:00)';
@@ -553,9 +545,7 @@
             grid.appendChild(btn);
         }
 
-        // Cek jam buka & promo saat halaman dimuat
         checkStoreHours();
-        // Cek berkala tiap 1 menit
         setInterval(checkStoreHours, 60000);
 
         function setHour(h, el) {
@@ -569,7 +559,8 @@
             el.className = "h-9 hour-btn active rounded-lg text-xs font-bold transition transform scale-105";
             
             const promoSec = document.getElementById('promoSection');
-            if(h === 3) {
+            // JIKA DURASI 3 JAM ATAU SEDANG PROMO TAKBIRAN, TAMPILKAN KOTAK VOUCHER
+            if(h === 3 || isTakbiran) {
                 promoSec.classList.remove('hidden');
                 calc();
             } else { 
@@ -587,7 +578,7 @@
 
         // === PERBAIKAN VALIDASI VOUCHER OTOMATIS MENGHITUNG DISKON ===
         function calc() {
-            let total = selHour * HARGA_NORMAL_PER_JAM;
+            let total = selHour * HARGA_NORMAL_PER_JAM_ASLI;
             const codeInput = document.getElementById('voucherCode');
             const code = codeInput.value.trim().toUpperCase();
             const msg = document.getElementById('voucherMessage');
@@ -595,26 +586,30 @@
             msg.innerHTML = "";
             msg.className = "text-center text-[10px] mt-1 font-bold min-h-[16px] transition-all";
 
-            if(selHour === 3 && code !== "") {
-                if(code === KODE_VOUCHER_HARI_INI.toUpperCase()) {
-                    total = HARGA_PROMO_3_JAM; 
-                    
-                    if (HARGA_PROMO_3_JAM === 0) {
-                        // Khusus jika harga sedang 0 (Gratis Takbiran)
-                        msg.innerHTML = `<i class="fa-solid fa-circle-check"></i> Spesial Malam Takbiran, Main PS GRATIS!`;
-                    } else {
-                        // Perhitungan diskon biasa
-                        let hargaNormal3Jam = 3 * HARGA_NORMAL_PER_JAM;
-                        let jumlahDiskon = hargaNormal3Jam - HARGA_PROMO_3_JAM;
-                        let teksDiskon = jumlahDiskon % 1000 === 0 ? (jumlahDiskon/1000) + " ribu" : "Rp " + jumlahDiskon.toLocaleString('id-ID');
-                        msg.innerHTML = `<i class="fa-solid fa-circle-check"></i> Kamu dapat diskon ${teksDiskon}!`;
-                    }
-
+            if (code !== "") {
+                if (isTakbiran && code === VOUCHER_TAKBIRAN.toUpperCase()) {
+                    // JIKA TAKBIRAN, SEMUA DURASI JADI GRATIS
+                    total = 0; 
+                    msg.innerHTML = `<i class="fa-solid fa-circle-check"></i> Spesial Malam Takbiran, Main PS GRATIS!`;
                     msg.classList.add("text-emerald-400");
                     msg.classList.remove("text-red-500");
                     codeInput.style.borderColor = "#34d399"; 
+
+                } else if (!isTakbiran && selHour === 3 && code === VOUCHER_NORMAL.toUpperCase()) {
+                    // JIKA HARI NORMAL & 3 JAM
+                    total = HARGA_PROMO_NORMAL_3_JAM; 
+                    let hargaNormal3Jam = 3 * HARGA_NORMAL_PER_JAM_ASLI;
+                    let jumlahDiskon = hargaNormal3Jam - HARGA_PROMO_NORMAL_3_JAM;
+                    let teksDiskon = jumlahDiskon % 1000 === 0 ? (jumlahDiskon/1000) + " ribu" : "Rp " + jumlahDiskon.toLocaleString('id-ID');
+
+                    msg.innerHTML = `<i class="fa-solid fa-circle-check"></i> Kamu dapat diskon ${teksDiskon}!`;
+                    msg.classList.add("text-emerald-400");
+                    msg.classList.remove("text-red-500");
+                    codeInput.style.borderColor = "#34d399"; 
+
                 } else {
-                    msg.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> Kode Voucher Salah!`;
+                    // JIKA KODE SALAH ATAU SYARAT TIDAK TERPENUHI
+                    msg.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> Kode Voucher Salah / Tidak Berlaku!`;
                     msg.classList.add("text-red-500");
                     msg.classList.remove("text-emerald-400");
                     codeInput.style.borderColor = "#ef4444"; 
@@ -763,7 +758,7 @@
                 }
             } 
             else if (kataKunciIya.includes(txt)) {
-                // MENGAMBIL KODE LANGSUNG DARI PENGATURAN PALING ATAS
+                // Memberikan kode voucher yang aktif hari ini
                 botReply = KODE_VOUCHER_HARI_INI;
             }
 
